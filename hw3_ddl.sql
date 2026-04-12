@@ -10,7 +10,81 @@ DROP DATABASE IF EXISTS hw3;
 CREATE DATABASE IF NOT EXISTS hw3;
 USE hw3;
 
+CREATE TABLE Team (
+  team_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  city VARCHAR(100) NOT NULL,
+  conference ENUM('NFC', 'AFC') NOT NULL,
+  division ENUM('East', 'North', 'South', 'West') NOT NULL,
 
+  CONSTRAINT fk_stadium
+    FOREIGN KEY(team_id)
+    REFERENCES Stadium(stadium_id)
+);
+
+CREATE TABLE Player (
+  player_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  position ENUM(
+    -- OFFENSIVE POSITIONS
+    -- quarterback
+    'QB',
+    -- running back
+    'RB',
+    -- fullback
+    'FB',
+    -- left tackle
+    'LT',
+    -- left guard
+    'LG',
+    -- center
+    'C',
+    -- right guard
+    'RG',
+    -- right tackle
+    'RT',
+    -- wide receiver
+    'WR',
+    -- tight end
+    'TE',
+
+    -- DEFENSIVE POSITIONS
+    -- defensive end
+    'DE',
+    -- defensive tackle
+    'DT',
+    -- outside linebacker
+    'OLB',
+    -- inside linebacker
+    'ILB',
+    -- middle linebacker
+    'MLB',
+    -- cornerback
+    'CB',
+    -- strong safety
+    'SS',
+    -- free safety
+    'FS',
+
+    -- SPECIAL TEAMS
+    -- kicker
+    'K',
+    -- punter
+    'P',
+    -- kick returner
+    'KR',
+    -- punt returner
+    'PR',
+    -- long snapper
+    'LS',
+
+  ) NOT NULL,
+  -- status <- this is in the ERD but I'm not sure what it means
+
+  CONSTRAINT fk_team
+    FOREIGN KEY(team_id)
+    REFERENCES Team(player_id)
+);
 -- =====================================================
 --  CREATE TeamRoster TABLE
 -- Same structure as HW2
@@ -35,7 +109,6 @@ CREATE TABLE TeamRoster (
     INDEX idx_lastname (Name_Last)
 );
 
-
 -- =====================================================
 -- INSERT TEAM ROSTER DATA
 -- =====================================================
@@ -52,7 +125,6 @@ VALUES
 (128, 'Louie', 'Duck', '1110 Seven Seas Dr.', 'Lake Buena Vista', 'FL', 'USA', '32830'),
 (129, 'Phooey', 'Duck', '1-1 Maihama', 'Urayasu', 'Chiba Prefecture', 'Disney Tokyo Japan', NULL),
 (131, 'Della', 'Duck', '77700 Boulevard du Parc', 'Coupvray', NULL, 'Disney Paris France', NULL);
-
 
 -- =====================================================
 -- CREATE Statistics TABLE
@@ -79,7 +151,6 @@ CREATE TABLE Statistics (
         )
 );
 
-
 -- =====================================================
 -- INSERT STATISTICS DATA
 -- =====================================================
@@ -92,7 +163,6 @@ VALUES
 (20, 128, 2, 45, 9, 1, 2),
 (21, 107, 15, 39, 26, 3, 7),
 (22, 100, 29, 47, 27, 9, 8);
-
 
 -- =====================================================
 -- USERS TABLE
@@ -112,10 +182,9 @@ CREATE TABLE Users (
         ON DELETE SET NULL
 );
 
-
 -- =====================================================
 -- SAMPLE LOGIN USERS
--- 
+--
 -- =====================================================
 INSERT INTO Users (username, password_hash, role, roster_id)
 VALUES
@@ -125,7 +194,6 @@ VALUES
 ('mickey', '$2y$10$BdprHaCb13VVOEIKRu5RJuL8/B1hhgQdmrg8kmHFyxoild2Z0txRi', 'player', 107),
 ('louie', '$2y$10$kxzs.J/u3BcprwPz3YW7ZecW5l8ZG2tzrqiealwSTT7Ya/jGKh9K2', 'player', 128);
 
-
 -- =====================================================
 -- DROP EXISTING MYSQL USERS
 -- =====================================================
@@ -133,7 +201,6 @@ DROP USER IF EXISTS 'manager_user'@'localhost';
 DROP USER IF EXISTS 'coach_user'@'localhost';
 DROP USER IF EXISTS 'player_user'@'localhost';
 DROP USER IF EXISTS 'auth_user'@'localhost';
-
 
 -- =====================================================
 -- CREATE MYSQL USERS
@@ -143,7 +210,6 @@ CREATE USER 'coach_user'@'localhost' IDENTIFIED BY 'coach_password';
 CREATE USER 'player_user'@'localhost' IDENTIFIED BY 'player_password';
 CREATE USER 'auth_user'@'localhost' IDENTIFIED BY 'auth_password';
 
-
 -- =====================================================
 -- ROLE PRIVILEGES
 -- auth_user is only for reading Users during login
@@ -151,7 +217,6 @@ CREATE USER 'auth_user'@'localhost' IDENTIFIED BY 'auth_password';
 GRANT SELECT
 ON hw3.Users
 TO 'auth_user'@'localhost';
-
 
 -- Manager can modify TeamRoster and Statistics data,
 -- but cannot create/drop/alter tables
@@ -163,17 +228,15 @@ GRANT SELECT, INSERT, UPDATE, DELETE
 ON hw3.Statistics
 TO 'manager_user'@'localhost';
 
-
 -- Coach can view roster and work with statistics
 GRANT SELECT
 ON hw3.TeamRoster
 TO 'coach_user'@'localhost';
 
--- coach can only make corrections to, but not add or delete, a player’s statistics 
+-- coach can only make corrections to, but not add or delete, a player’s statistics
 GRANT SELECT, UPDATE
 ON hw3.Statistics
 TO 'coach_user'@'localhost';
-
 
 -- Player can view all roster/statistics rows,
 -- but PHP enforces that they may only CRUD their own statistics
