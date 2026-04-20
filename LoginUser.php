@@ -5,14 +5,14 @@
   $userName = strtolower('JProg');  // design decision: usernames are case insensitive
   $password = 'SomethingClever';
 
-  $query = "SELECT 
-              Roles.roleName, UserLogin.Password 
-            FROM 
-              UserLogin, Roles 
+  $query = "SELECT
+              Roles.roleName, UserLogin.Password
+            FROM
+              UserLogin, Roles
              WHERE
                 UserName = ?  AND
                 UserLogin.Role = Roles.ID_Role";
-  
+
   if( ($stmt = $db->prepare($query)) === FALSE )
   {
     echo "Error: failed to prepare query: ". $db->error . "<br/>";
@@ -32,28 +32,28 @@
     echo "-- display login form --<br/>";
     return -4;
   }
-  
+
   if( ($stmt->bind_result($roleName, $PWHash)) === FALSE )
   {
     echo "Error: failed to bind query results to local variables: ". $db->error . "<br/>";
     return -5;
   }
 
-  
+
   if( ($stmt->fetch()) === FALSE )
   {
     echo "Error: failed to fetch query results: ". $db->error . "<br/>";
     return -6;
   }
-  
-  if (! password_verify($password, $PWHash)) 
+
+  if (! password_verify($password, $PWHash))
   {
     echo "Login attempt failed<br/>";
     // echo 'Password is valid!';
     echo "-- display login form --<br/>";
     return -7;
   }
-  
+
   // Login successful at this point, do some book keeping ...
   echo "Login successful for user '$userName' as '$roleName'<br/>";
   $_SESSION['UserName'] = $userName;
