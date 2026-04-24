@@ -1,7 +1,5 @@
 <?php
   /*
-    HW3 database configuration
-
     Database-level authorization
        - After the application identifies the user's role
          (manager, coach, or player),
@@ -22,7 +20,7 @@
 
   */
 
-  define('DATA_BASE_NAME', 'hw3');
+  define('DATA_BASE_NAME', 'football');
   define('DATA_BASE_HOST', 'localhost');
 
   /*
