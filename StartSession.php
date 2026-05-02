@@ -13,7 +13,7 @@
   }
 
   if( authenticatedUser() )  $DBName = $_SESSION['UserRole'];
-  else                       $DBName = NO_ROLE;
+  else                       $DBName = AUTH_ROLE;
 
   $DBPassword  = $DBPasswords[$DBName];
 

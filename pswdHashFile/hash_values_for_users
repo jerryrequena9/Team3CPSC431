@@ -1,0 +1,19 @@
+-- manager1 password: ManagerPass123!
+UPDATE UserAccount
+SET password_hash = '$2y$10$ZtONA431NVTqTVj.PqwBKOomuc39KzejQ0xVqYwvzNcu5BHt/ndT.'
+WHERE username = 'manager1';
+
+-- coach1 password: CoachPass123!
+UPDATE UserAccount
+SET password_hash = '$2y$10$qYU6hWcXFpfypBY44MaxXuwudN2X4hm5x9vrT6krjhTzdIenODPHS'
+WHERE username = 'coach1';
+
+-- player1 password: PlayerPass123!
+UPDATE UserAccount
+SET password_hash = '$2y$10$znkhq0bbHC0a8Jw5XtPH2O3LFzSr36JkYRqNoF37SbO7MX9DAZe9.'
+WHERE username = 'player1';
+
+-- fan1 password: FanPass123!
+UPDATE UserAccount
+SET password_hash = '$2y$10$U8WujKSZDiDUlW4fBBZbcOKDhE0Fb5kLUQKr5buNWiICbIb6POZc6'
+WHERE username = 'fan1';
