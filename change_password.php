@@ -6,11 +6,12 @@
   do_html_header("Change Password");
   check_valid_user();
 
-  try {
-    if (!filled_out($_POST)) {
-      throw new Exception("All fields are not filled out");
-    }
+  if (!filled_out($_POST)) {
+    header('Location: change_password.php');
+    exit;
+  }
 
+  try {
     $username = $_SESSION['UserName'];
     $old_password = sanitize_str($_POST['change_old_password']);
     $new_password = sanitize_str($_POST['change_new_password']);
