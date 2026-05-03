@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS football;
+DROP   DATABASE IF EXISTS football;
+CREATE DATABASE           football;
 
-CREATE DATABASE football;
 USE football;
 
 -- =====================================================
@@ -195,6 +195,9 @@ CREATE TABLE Stat (
 -- USERS
 -- =====================================================
 
+DROP USER IF EXISTS 'Guest'@'localhost';
+CREATE USER 'Guest'@'localhost' IDENTIFIED BY 'guest_pass';
+
 DROP USER IF EXISTS 'Fan'@'localhost';
 CREATE USER 'Fan'@'localhost' IDENTIFIED BY 'fan_pass';
 
@@ -216,10 +219,23 @@ CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin_pass';
 -- PERMISSIONS
 -- =====================================================
 
--- Manager (full access)
-GRANT ALL PRIVILEGES ON football.* TO 'Manager'@'localhost';
+-- Admin
+GRANT ALL PRIVILEGES ON football.* TO 'admin'@'localhost';
 
--- Fan (read-only)
+-- Manager
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.UserAccount TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Stat        TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Team        TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Player      TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Season      TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Stadium     TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Team_Season TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Player_Team TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Role        TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Coach       TO 'Manager'@'localhost';
+GRANT SELECT, INSERT, DELETE, UPDATE ON football.Game        TO 'Manager'@'localhost';
+
+-- Fan
 GRANT SELECT ON football.Team          TO 'Fan'@'localhost';
 GRANT SELECT ON football.Player        TO 'Fan'@'localhost';
 GRANT SELECT ON football.Coach         TO 'Fan'@'localhost';
@@ -228,16 +244,20 @@ GRANT SELECT ON football.Stat          TO 'Fan'@'localhost';
 GRANT SELECT ON football.Season        TO 'Fan'@'localhost';
 GRANT SELECT ON football.Stadium       TO 'Fan'@'localhost';
 GRANT SELECT ON football.Team_Season   TO 'Fan'@'localhost';
-GRANT SELECT ON football.Role          TO 'Fan'@'localhost';
+GRANT SELECT ON football.Player_Team   TO 'Fan'@'localhost';
+
+GRANT SELECT, UPDATE ON football.UserAccount TO 'Fan'@'localhost';
 
 -- Player
 GRANT SELECT ON football.Team          TO 'Player'@'localhost';
+GRANT SELECT ON football.Coach         TO 'Player'@'localhost';
 GRANT SELECT ON football.Game          TO 'Player'@'localhost';
 GRANT SELECT ON football.Stat          TO 'Player'@'localhost';
 GRANT SELECT ON football.Season        TO 'Player'@'localhost';
 GRANT SELECT ON football.Stadium       TO 'Player'@'localhost';
 GRANT SELECT ON football.Team_Season   TO 'Player'@'localhost';
-GRANT SELECT ON football.Role          TO 'Player'@'localhost';
+GRANT SELECT ON football.Player_Team   TO 'Player'@'localhost';
+GRANT SELECT ON football.Stat          TO 'Player'@'localhost';
 
 GRANT SELECT, UPDATE ON football.UserAccount TO 'Player'@'localhost';
 GRANT SELECT, UPDATE ON football.Player      TO 'Player'@'localhost';
@@ -245,18 +265,20 @@ GRANT SELECT, UPDATE ON football.Player      TO 'Player'@'localhost';
 -- Coach
 GRANT SELECT ON football.Season        TO 'Coach'@'localhost';
 GRANT SELECT ON football.Stadium       TO 'Coach'@'localhost';
-GRANT SELECT ON football.Role          TO 'Coach'@'localhost';
+GRANT SELECT ON football.Team_Season   TO 'Coach'@'localhost';
 
 GRANT SELECT, UPDATE           ON football.Team         TO 'Coach'@'localhost';
 GRANT SELECT, UPDATE           ON football.Player       TO 'Coach'@'localhost';
+GRANT SELECT, UPDATE           ON football.UserAccount  TO 'Coach'@'localhost';
+GRANT SELECT, UPDATE           ON football.Coach        TO 'Coach'@'localhost';
+
 GRANT SELECT, INSERT, UPDATE   ON football.Player_Team  TO 'Coach'@'localhost';
 GRANT SELECT, INSERT, UPDATE   ON football.Game         TO 'Coach'@'localhost';
 GRANT SELECT, INSERT, UPDATE   ON football.Stat         TO 'Coach'@'localhost';
-GRANT SELECT, UPDATE           ON football.Team_Season  TO 'Coach'@'localhost';
-GRANT SELECT, UPDATE           ON football.UserAccount  TO 'Coach'@'localhost';
 
--- Admin
-GRANT ALL PRIVILEGES ON football.* TO 'admin'@'localhost';
+-- Guest
+-- Permissions only allow logins, registrations, and password resets
+GRANT SELECT, INSERT, UPDATE ON football.UserAccount TO 'Guest'@'localhost';
 
 -- =====================================================
 -- APPLY

@@ -19,18 +19,6 @@ function valid_email($address) {
   return preg_match('/^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/', $address);
 }
 
-// TODO: use different credentials based on role
-function db_connect() {
-  require_once('Adaptation.php');
-  // replace with actual values
-  $result = new mysqli('localhost', 'bm_user', 'password', 'bookmarks');
-  if (!$result) {
-    throw new Exception('Could not connect to database server');
-  } else {
-    return $result;
-  }
-}
-
 // TODO: finish implementation, add roles, USE PREPARED STATEMENTS
 function register($first_name, $last_name, $username, $email, $password) {
   // register new person with db
