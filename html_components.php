@@ -1,36 +1,40 @@
-function do_html_header($title) {
-  // print an HTML header
-  ?>
-  <!doctype html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <title><?php echo $title;?></title>
-      <style>
-        body { font-family: Arial, Helvetica, sans-serif; font-size: 13px }
-        li, td { font-family: Arial, Helvetica, sans-serif; font-size: 13px }
-        hr { color: #3333cc;}
-        a { color: #000 }
-        div.formblock
-        { background: #ccc; width: 300px; padding: 6px; border: 1px solid #000;}
-      </style>
-    </head>
-    <body>
-      <hr/>
+<?php
 
-  <?php
-    if ($title) {
-      echo "<h1>".$title."</h1>"
+function do_html_header($title) {
+?>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><?php echo $title; ?></title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; font-size: 13px; }
+    li, td { font-family: Arial, Helvetica, sans-serif; font-size: 13px; }
+    hr { color: #3333cc; }
+    a { color: #000; }
+    div.formblock {
+      background: #ccc;
+      width: 300px;
+      padding: 6px;
+      border: 1px solid #000;
     }
+  </style>
+</head>
+<body>
+<hr/>
+
+<?php
+  if ($title) {
+    echo "<h1>{$title}</h1>";
+  }
 }
 
 function do_html_footer() {
 ?>
-  </body>
-  </html>
+</body>
+</html>
 <?php
 }
-
 function display_login_form() {
 ?>
   <form method="post" action="login.php">

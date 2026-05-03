@@ -13,11 +13,11 @@
   }
 
   if( authenticatedUser() )  $DBName = $_SESSION['UserRole'];
-  else                       $DBName = NO_ROLE;
+  else                       $DBName = AUTH_ROLE;
 
   $DBPassword  = $DBPasswords[$DBName];
 
-  printf("Connecting to DB as '%s'/'%s'<br/>", $DBName, $DBPassword);
+  // printf("Connecting to DB as '%s'/'%s'<br/>", $DBName, $DBPassword);
   $db = new mysqli(DATA_BASE_HOST, $DBName, $DBPassword, DATA_BASE_NAME);
 
   if( $db->connect_errno != 0)  // if connection not successful

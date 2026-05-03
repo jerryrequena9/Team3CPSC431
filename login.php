@@ -1,74 +1,100 @@
 <?php
-  // TODO: integrate form data and rewrite in general
-  require_once( 'StartSession.php' );
-  // home page after user has logged in successfully
+// Include session handling and database connection
+require_once('StartSession.php');
 
-  require_once('helpers.php');
-  require_once('StartSession.php');
+// Include helper functions (e.g., sanitize_str)
+require_once('helpers.php');
 
-  //create short variable names
-  if (!isset($_POST['username'])) {
-    //if not isset -> set with dummy value
-    $_POST['username'] = " ";
-  }
-  $username = sanitize_str($_POST['username']);
-  if (!isset($_POST['password'])) {
-    //if not isset -> set with dummy value
-    $_POST['password'] = " ";
-  }
-  $passwd = sanitize_str($_POST['password']);
-  if ($username && $password) {
-    // they have just tried logging in
-    try {
-      login($username, $password);
+// Include HTML components for header/footer display
+require_once('html_components.php');
+
+
+// Check if form data was submitted
+if (!isset($_POST['username']) || !isset($_POST['password'])) {
+    // If not, redirect back to login page
+    header("Location: login_page.php");
+    exit;
+}
+
+// Sanitize user input
+$username = sanitize_str($_POST['username']);
+$password = sanitize_str($_POST['password']);
+
+try {
+    // Attempt to log the user in
+    login($username, $password);
+
+    // If successful, redirect to home page
+    header("Location: home_page.php");
+    exit;
+
+} catch (Exception $e) {
+    // If login fails, display error message
+    do_html_header('Login Failed');
+    echo "Error: " . $e->getMessage() . "<br>";
+    echo "<a href='login_page.php'>Try again</a>";
+    do_html_footer();
+    exit;
+}
+
+
+/**
+ * Function: login
+ * ----------------
+ * Authenticates a user using username and password.
+ * On success, stores session variables for user identity and role.
+ */
+function login($username, $password) {
+
+    // Access the global database connection from StartSession.php
+    global $db;
+
+    // Query to retrieve user credentials and role
+    $query = "
+        SELECT 
+            u.user_id,
+            u.username,
+            u.password_hash,
+            r.name
+        FROM UserAccount u
+        JOIN Role r ON u.role_id = r.role_id
+        WHERE u.username = ?
+    ";
+
+    // Prepare SQL statement
+    $stmt = $db->prepare($query);
+    if (!$stmt) {
+        throw new Exception("Query preparation failed");
     }
-    catch(Exception $e) {
-      // unsuccessful login
-      do_html_header('Problem:');
-      echo 'You could not be logged in.<br>Error: '.$e->getMessage().'<br>You must be logged in to view this page.';
-      echo "<a href='login_page.php'>Login</a>";
-      do_html_footer();
-      exit;
-    }
-  }
 
-  require('home_page.php');
+    // Bind username parameter
+    $stmt->bind_param("s", $username);
 
-  function login($username, $password) {
-    // TODO: fix query
-    $query = "SELECT
-                Roles.roleName, UserAccount.Password
-              FROM
-                UserLogin, Roles
-               WHERE
-                  UserName = ?  AND
-                  UserLogin.Role = Roles.ID_Role";
+    // Execute query
+    $stmt->execute();
 
-    if(($stmt = $db->prepare($query)) === FALSE) {
-      throw new Exception("Failed to prepare query");
+    // Store result for checking number of rows
+    $stmt->store_result();
+
+    // If no user found, throw error
+    if ($stmt->num_rows !== 1) {
+        throw new Exception("User not found");
     }
 
-    if(($stmt->bind_param('s', $userName)) === FALSE) {
-      throw new Exception("Failed to bind query parameters to query");
+    // Bind results to variables
+    $stmt->bind_result($user_id, $db_username, $hash, $role);
+
+    // Fetch result
+    $stmt->fetch();
+
+    // Verify password using hashed password
+    if (!password_verify($password, $hash)) {
+        throw new Exception("Invalid password");
     }
 
-    if(!($stmt->execute() && $stmt->store_result() && $stmt->num_rows === 1)) {
-      throw new Excception("Existing user $userName not found");
-    }
-
-    if( ($stmt->bind_result($roleName, $PWHash)) === FALSE ) {
-      throw new Exception("Failed to bind query results to local variables");
-    }
-
-    if(($stmt->fetch()) === FALSE) {
-      throw new Exception("Failed to fetch query results");
-    }
-
-    if (!password_verify($password, $PWHash)) {
-      throw new Exception("Password is incorrect");
-    }
-
-    $_SESSION['username'] = $userName;
-    $_SESSION['user_role'] = $roleName;
-  }
+    // Store session variables (must match StartSession.php expectations)
+    $_SESSION['UserName'] = $db_username;
+    $_SESSION['UserRole'] = $role;
+    $_SESSION['UserID'] = $user_id;
+}
 ?>
