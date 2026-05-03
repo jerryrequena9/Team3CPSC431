@@ -278,6 +278,7 @@ GRANT SELECT, INSERT, UPDATE   ON football.Stat         TO 'Coach'@'localhost';
 
 -- Guest
 -- Permissions only allow logins, registrations, and password resets
+GRANT SELECT                 ON football.Role TO 'Guest'@'localhost';
 GRANT SELECT, INSERT, UPDATE ON football.UserAccount TO 'Guest'@'localhost';
 
 -- =====================================================

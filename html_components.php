@@ -47,7 +47,7 @@ function display_login_form() {
       <input type="submit" name="login" value="Login"><br><br>
 
       <a href="forgot_password_page.php">Forgot Password?</a><br>
-      <a href="register_user_page.php">Create User</a>
+      <a href="register_user_page.php">Register</a>
   </form>
 <?php
 }
@@ -55,11 +55,12 @@ function display_login_form() {
 function display_register_form() {
 ?>
   <form method="post" action="register_user.php">
-      <label>First Name:</label><br>
+<!--      <label>First Name:</label><br>
       <input type="text" name="first_name"><br><br>
 
       <label>Last Name:</label><br>
       <input type="text" name="last_name"><br><br>
+-->
 
       <label>Email:</label><br>
       <input type="email" name="email"><br><br>
@@ -75,15 +76,16 @@ function display_register_form() {
 
       <input type="submit" name="register" value="Register"><br><br>
 
-      <a href="login_page.php">Back to Login</a>
+      <a href="login_page.php">Login</a>
   </form>
 <?php
 }
 
 function display_user_nav() {
 ?>
+  <a href='home_page.php'>Home</a>
   <a href='logout.php'>Logout</a>
-  <a href='change_password_page.php'>Change password</a>
+  <a href='change_password_page.php'>Change Password</a>
 <?php
 }
 
@@ -99,7 +101,7 @@ function display_change_password_form() {
       <label>Repeat New Password:</label><br>
       <input type="email" name="change_repeat_new_password"><br><br>
 
-      <input type="submit" name="change_password" value="Change password"><br><br>
+      <input type="submit" name="change_password" value="Submit"><br><br>
   </form>
 <?php
 }
@@ -110,7 +112,7 @@ function display_forgot_password_form() {
       <label>Username:</label><br>
       <input type="text" name="forgot_username"><br><br>
 
-      <input type="submit" name="forgot_password" value="Change password"><br><br>
+      <input type="submit" name="forgot_password" value="Submit"><br><br>
   </form>
 <?php
 }

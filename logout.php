@@ -2,20 +2,21 @@
   require_once('StartSession.php');
   require_once('html_components.php');
 
-  $old_user = $_SESSION['valid_user'];
-  // store to test if they *were* logged in
-  unset($_SESSION['valid_user']);
+  $old_user = $_SESSION['UserName'];
+  unset($_SESSION['UserName']);
   $result_dest = session_destroy();
+
   // start output html
   do_html_header('Logging Out');
+  check_valid_user();
   if (!empty($old_user)) {
     if ($result_dest) {
       // if they were logged in and are now logged out
-      echo 'Logged out.<br>';
-      echo "<a href='login_page.php'>Login</a>";
+      header('Location: login.php');
+      exit;
     } else {
       // they were logged in and could not be logged out
-      echo 'Could not log you out.<br>';
+      echo 'Could not log you out.';
       }
   } else {
     // if they weren't logged in but came to this page somehow

@@ -1,15 +1,7 @@
 <?php
   session_start();
   require_once('Adaptation.php');
-
-  // If user has already been authenticated
-  function authenticatedUser()
-  {
-    global $DBPasswords;
-    return  isset($_SESSION['UserName']) && !empty($_SESSION['UserName'])   &&
-            isset($_SESSION['UserRole']) && !empty($_SESSION['UserRole'])   &&
-            isset($DBPasswords[$_SESSION['UserRole']]);
-  }
+  require_once('helpers.php');
 
   if( authenticatedUser() )  $DBName = $_SESSION['UserRole'];
   else                       $DBName = AUTH_ROLE;

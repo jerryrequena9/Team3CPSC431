@@ -1,6 +1,6 @@
 <?php
-  require("html_components.php");
   require("StartSession.php");
+  require("html_components.php");
 
   do_html_header('Home');
   check_valid_user();
