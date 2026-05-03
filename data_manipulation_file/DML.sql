@@ -5,7 +5,7 @@ INSERT INTO Role (name, description) VALUES
 ('Fan', 'Read-only access to games and player stats'),
 ('Player', 'Player account access'),
 ('Coach', 'Team management privileges'),
-('Manager', 'Full system privileges');
+('Manager', 'Full system privileges (but not to the level of an admin)');
 
 -- Stadiums
 INSERT INTO Stadium (name, city) VALUES
