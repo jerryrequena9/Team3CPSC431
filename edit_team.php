@@ -31,9 +31,7 @@
     if (!$stmt->bind_param("ssssi", $name, $city, $conference, $division, $team_id) || !$stmt->execute()) {
         display_error_exit("failed to update team");
     }
-    if ($stmt->affected_rows == 0) {
-        err_permission_denied();
-    }
+
     $stmt->close();
 
     header("Location: manage_team_page.php");

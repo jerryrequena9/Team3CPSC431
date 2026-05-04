@@ -35,9 +35,7 @@
     if (!$stmt->bind_param('ii', $value, $stat_id) || !$stmt->execute()) {
         display_error_exit("failed to update stat");
     }
-    if ($stmt->affected_rows == 0) {
-        err_permission_denied();
-    }
+
     $stmt->close();
 
     header('Location: manage_player_stats_page.php');
