@@ -32,8 +32,6 @@ if ($role === 'Coach' || $role === 'Manager') {
     echo "<a href='manage_player_team.php'>Manage Player Teams</a><br>";
 }
 
-echo "<a href='manage_users_page.php'>Manage Users</a><br>";
-echo "<br>";
 display_user_nav();
 
 do_html_footer();

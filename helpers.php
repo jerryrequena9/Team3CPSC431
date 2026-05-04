@@ -11,13 +11,13 @@ function sanitize_str($data) {
 /**
  * Check that all form fields are filled out
  */
-function filled_out($form_vars) {
+function is_valid_post($form_vars) {
   foreach ($form_vars as $value) {
     if (!isset($value) || $value === '') {
       return false;
     }
   }
-  return true;
+  return $_SERVER['REQUEST_METHOD'] === 'POST';
 }
 
 /**
@@ -69,4 +69,31 @@ function require_any_role($roles) {
   }
 }
 
+// Generic error page for permission errors
+function err_permission_denied() {
+  do_html_header('Permission Denied');
+  display_user_nav();
+  do_html_footer();
+  exit;
+}
+
+// Prepare with db permissions
+// ALL prepares should use this function
+function prepare_with_perms($db, $query) {
+  try {
+    $stmt = $db->prepare($query);
+    return $stmt;
+  } catch (Exception $e) {
+    err_permission_denied();
+  }
+}
+
+// Validate password
+function validate_password($password) {
+  // Check for valid password length
+  if ((strlen($password) < 6) || (strlen($password) > 16)) {
+    return false;
+  }
+  return true;
+}
 ?>

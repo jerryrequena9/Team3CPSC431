@@ -9,15 +9,15 @@ require_once('helpers.php');
 require_once('html_components.php');
 
 // Check if form data was submitted
-if (!filled_out($_POST)) {
+if (!is_valid_post($_POST)) {
     // If not, redirect back to login page
     header("Location: login_page.php");
     exit;
 }
 
 // Sanitize user input
-$username = sanitize_str($_POST['username']);
-$password = sanitize_str($_POST['password']);
+$username = sanitize_str($_POST['login_username']);
+$password = sanitize_str($_POST['login_password']);
 
 try {
     // Attempt to log the user in
@@ -29,11 +29,10 @@ try {
 
 } catch (Exception $e) {
     // If login fails, display error message
-    do_html_header('Login Failed');
-    echo "Error: " . $e->getMessage() . "<br>";
-    echo "<a href='login_page.php'>Login</a>";
+    do_html_header('Error');
+    echo $e->getMessage();
+    echo "<br><a href='login_page.php'>Login</a>";
     do_html_footer();
-    exit;
 }
 
 /**
@@ -60,8 +59,8 @@ function login($username, $password) {
     ";
 
     // Prepare SQL statement
-    $stmt = $db->prepare($query);
-    if (!$stmt || !$stmt->bind_param("s", $username) || !$stmt->execute() || !$stmt->store_result()) {
+    $stmt = prepare_with_perms($db, $query);
+    if (!$stmt->bind_param("s", $username) || !$stmt->execute() || !$stmt->store_result()) {
       throw new Exception("Login failed");
     }
 
@@ -89,7 +88,7 @@ function login($username, $password) {
     ";
 
     // Prepare SQL statement
-    $stmt = $db->prepare($query);
+    $stmt = prepare_with_perms($db, $query);
     if (!$stmt || !$stmt->bind_param("s", $username) || !$stmt->execute()) {
       throw new Exception("Login failed");
     }

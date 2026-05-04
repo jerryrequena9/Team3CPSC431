@@ -6,34 +6,29 @@
   do_html_header("Change Password");
   check_valid_user();
 
-  if (!filled_out($_POST)) {
+  if (!is_valid_post($_POST)) {
     header('Location: change_password_page.php');
     exit;
   }
   
+  $username = $_SESSION['UserName'];
+  $old_password = sanitize_str($_POST['change_old_password']);
+  $new_password = sanitize_str($_POST['change_new_password']);
+  $repeat_new_password = sanitize_str($_POST['change_repeat_new_password']);
+
+  if ($new_password != $repeat_new_password) {
+    display_error_exit("new password and confirm new password do not match");
+  }
+
   try {
-    $username = $_SESSION['UserName'];
-    $old_password = sanitize_str($_POST['change_old_password']);
-    $new_password = sanitize_str($_POST['change_new_password']);
-    $repeat_new_password = sanitize_str($_POST['change_repeat_new_password']);
-
-    if ($new_password != $repeat_new_password) {
-      throw new Exception("Repeated new password and new password do not match");
-    }
-
     change_password($username, $old_password, $new_password);
-
+    do_html_header('Success');
     echo "Password changed successfully";
     echo "<a href='home_page.php'>Home</a>";
-    do_user_nav();
+    display_user_nav();
     do_html_footer();
   } catch (Exception $e) {
-    do_html_header("Problem");
-    echo "Error: ".$e->getMessage()."<br>";
-    echo "<a href='change_password_page.php'>Change password</a>";
-    do_user_nav();
-    do_html_footer();
-    exit;
+    display_error_exit($e->getMessage());
   }
 
   function change_password($username, $old_password, $new_password) {
@@ -43,7 +38,7 @@
       FROM UserAccount
       WHERE username = ?
     ";
-    $stmt = $db->prepare($query);
+    $stmt = prepare_with_perms($db, $query);
     if (!$stmt || !$stmt->bind_param("s", $username) || !$stmt->execute()) {
       throw new Exception('Could not change password.');
     }
@@ -58,13 +53,17 @@
       throw new Exception('Current password is incorrect.');
     }
 
+    if (!validate_password($new_password)) {
+      throw new Exception('The new password does not meet the requirements');
+    }
+
     $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
     $query = "
       UPDATE UserAccount
       SET password_hash = ?
       WHERE username = ?
     ";
-    $stmt = $db->prepare($query);
+    $stmt = prepare_with_perms($db, $query); 
     if (!$stmt || !$stmt->bind_param("ss", $new_hash, $username) || !$stmt->execute()) {
       throw new Exception('Could not update password.');
     }

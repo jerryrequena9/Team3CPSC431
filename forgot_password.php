@@ -5,20 +5,25 @@
 
   do_html_header('Password Reset');
 
-  if (!filled_out($_POST)) {
+  if (!is_valid_post($_POST)) {
     header('Location: forgot_password_page.php');
     exit;
   }
+
+  $username = sanitize_str($_POST['forgot_username']);
+
   try {
-    $username = sanitize_str($_POST['forgot_username']);
     $password = reset_password($username);
     email_password($username, $password);
+    do_html_header('Password Reset Email Sent');
     echo 'Your new password has been emailed to you.';
-  } catch (Exception $e) {
-    echo 'Your password could not be reset.';
     echo "<a href='login_page.php'>Login</a>";
     do_html_footer();
-    exit;
+  } catch (Exception $e) {
+      do_html_header('Error');
+      echo $e->getMessage();
+      echo "<br><a href='login_page.php'>Login</a>";
+      do_html_footer();
   }
 
   function reset_password($username) {
@@ -34,7 +39,7 @@
       WHERE username = ?;
     ";
 
-    $stmt = $db->prepare($query);
+    $stmt = prepare_with_perms($db, $query);
     if (!$stmt || !$stmt->bind_param("ss", $hashed_password, $username) || !$stmt->execute()) {
       throw new Exception('Could not change the password.');
     }
@@ -53,7 +58,8 @@
       FROM UserAccount
       WHERE username = ?
     ";
-    if (!$stmt || !$stmt->bind_param("s", $username) || !$stmt->execute()) {
+    $stmt = prepare_with_perms($db, $query);
+    if (!$stmt->bind_param("s", $username) || !$stmt->execute()) {
       throw new Exception('Could not send the email.');
     }
     $stmt->bind_result($email);

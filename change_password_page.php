@@ -17,7 +17,7 @@
         <label>Repeat New Password:</label><br>
         <input type="password" name="change_repeat_new_password"><br><br>
 
-        <input type="submit" name="change_password" value="Submit"><br><br>
+        <input type="submit" value="Change Password"><br><br>
     </form>
   ';
   display_user_nav();

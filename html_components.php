@@ -45,7 +45,16 @@ function display_user_nav() {
   <a href='home_page.php'>Home</a>
   <a href='logout.php'>Logout</a>
   <a href='change_password_page.php'>Change Password</a>
+  <a href='manage_user_page.php'>Manage Users</a>
 <?php
+}
+
+function display_error_exit($err) {
+  do_html_header("Error");
+  echo "Error: ".$err."<br>";
+  display_user_nav();
+  do_html_footer();
+  exit;
 }
 
 function display_teams($db) {

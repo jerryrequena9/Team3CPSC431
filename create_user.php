@@ -3,33 +3,31 @@
   require_once('helpers.php');
   require_once('html_components.php');
 
-  // Check that all fields are filled
+  check_valid_user();
+
   if (!is_valid_post($_POST)) {
-    header('Location: register_user_page.php');
-    exit;
+    display_error_exit("required fields are missing");
   }
 
-  $email = sanitize_str($_POST['register_email']);
-  $username = sanitize_str($_POST['register_username']);
-  $password = sanitize_str($_POST['register_password']);
-  $confirm_password = sanitize_str($_POST['register_confirm_password']);
-
+  $username = sanitize_str($_POST['manage_user_create_user_username']);
+  $email = sanitize_str($_POST['manage_user_create_user_email']);
+  $password = sanitize_str($_POST['manage_user_create_user_password']);
+  $repeat_password = sanitize_str($_POST['manage_user_create_user_repeat_password']);
   try {
-    register($username, $email, $password, $confirm_password);
-    // Registration successful -- prompt user to login
-    do_html_header('Registration Successful');
-    echo 'Your registration was successful!';
-    echo "<br><a href='login_page.php'>Login</a>";
+    register($username, $email, $password, $repeat_password);
+    do_html_header('Success');
+    echo 'Success: user created';
+    display_user_nav();
     do_html_footer();
+    exit;
   }
   catch (Exception $e) {
-    do_html_header('Error');
-    echo $e->getMessage();
-    echo "<br><a href='register_user_page.php'>Register</a>";
-    do_html_footer();
+    display_error_exit($e->getMessage());
     exit;
   }
 
+  // this is the same function as in register_user.php
+  // maybe refactor? but its only used twice
   function register($username, $email, $password, $confirm_password) {
     // Check that the email is valid
     if (!valid_email($email)) {
@@ -64,5 +62,4 @@
     }
     $stmt->close();
   }
-
 ?>
