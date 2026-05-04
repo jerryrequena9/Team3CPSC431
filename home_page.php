@@ -1,7 +1,11 @@
 <?php
-require("StartSession.php");
-require("html_components.php");
-require("helpers.php");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once("StartSession.php");
+require_once("html_components.php");
+require_once("helpers.php");
 
 do_html_header('Home');
 
@@ -27,9 +31,13 @@ if ($role === 'Player' || $role === 'Coach' || $role === 'Manager') {
     display_recent_games($db);
 }
 
-// Coach and Manager can view player game history
+// Coach and Manager can view and manipulate player game history
 if ($role === 'Coach' || $role === 'Manager') {
     display_player_games($db);
+}
+
+if ($role === 'Coach' || $role === 'Manager') {
+    echo "<a href='manage_player_team.php'>Manage Player Teams</a><br>";
 }
 
 echo "<br>";

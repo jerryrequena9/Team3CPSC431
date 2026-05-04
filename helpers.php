@@ -27,16 +27,7 @@ function valid_email($address) {
   return preg_match('/^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/', $address);
 }
 
-/**
- * Check whether the current session represents a valid logged-in user.
- */
-function authenticatedUser() {
-  global $DBPasswords;
 
-  return isset($_SESSION['UserName']) && !empty($_SESSION['UserName']) &&
-         isset($_SESSION['UserRole']) && !empty($_SESSION['UserRole']) &&
-         isset($DBPasswords[$_SESSION['UserRole']]);
-}
 
 /**
  * Require a valid logged-in user.

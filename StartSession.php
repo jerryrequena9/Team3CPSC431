@@ -1,24 +1,30 @@
 <?php
-  session_start();
-  require_once('Adaptation.php');
-  require_once('helpers.php');
+session_start();
 
-  if( authenticatedUser() )  $DBName = $_SESSION['UserRole'];
-  else                       $DBName = AUTH_ROLE;
+require_once('Adaptation.php');
 
-  $DBPassword  = $DBPasswords[$DBName];
+function authenticatedUser()
+{
+  global $DBPasswords;
 
-  function db_connect() {
-    $db = new mysqli(DATA_BASE_HOST, $DBName, $DBPassword, DATA_BASE_NAME);
+  return isset($_SESSION['UserName']) && !empty($_SESSION['UserName']) &&
+         isset($_SESSION['UserRole']) && !empty($_SESSION['UserRole']) &&
+         isset($DBPasswords[$_SESSION['UserRole']]);
+}
 
-    if( $db->connect_errno != 0)  // if connection not successful
-    {
-      echo "Error: failed to make a MySQL connection:  " . $db->connect_error . "<br/>";
-      return -1;
-    }
-    printf("Connected to DB as '%s'/'%s'<br/>", $DBName, $DBPassword);
+// Use the logged-in user's role as the MySQL database user.
+// If not logged in yet, use AUTH_ROLE from Adaptation.php.
+if (authenticatedUser()) {
+  $DBName = $_SESSION['UserRole'];
+} else {
+  $DBName = AUTH_ROLE;
+}
 
-    return $db;
-  }
+$DBPassword = $DBPasswords[$DBName];
 
+$db = new mysqli(DATA_BASE_HOST, $DBName, $DBPassword, DATA_BASE_NAME);
+
+if ($db->connect_errno) {
+  die("Error: failed to make a MySQL connection: " . $db->connect_error);
+}
 ?>

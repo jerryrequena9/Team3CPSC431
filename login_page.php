@@ -1,9 +1,9 @@
 <?php
-  require_once('StartSession.php');
-  require_once("html_components.php");
-  do_html_header("Login");
+require_once("html_components.php");
 
-  display_login_form();
+do_html_header("Login");
 
-  do_html_footer();
+display_login_form();
+
+do_html_footer();
 ?>
