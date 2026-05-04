@@ -13,8 +13,8 @@
   try {
     change_password($username, $password);
     do_html_header('Success');
-    echo 'Success: password was changed';
     display_user_nav();
+    echo 'Success: password was changed';
     do_html_footer();
     exit;
   } catch (Exception $e) {
@@ -36,6 +36,9 @@ function change_password($username, $new_password) {
     $stmt = prepare_with_perms($db, $query);
     if (!$stmt || !$stmt->bind_param("ss", $new_hash, $username) || !$stmt->execute()) {
         throw new Exception('Password was not changed');
+    }
+    if ($stmt->affected_rows == 0) {
+      err_permission_denied();
     }
 
     $stmt->close();

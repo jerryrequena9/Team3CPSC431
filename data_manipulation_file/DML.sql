@@ -29,6 +29,7 @@ INSERT INTO Team (name, stadium_id, conference, division, city) VALUES
 ('New York Giants', 7, 'NFC', 'East', 'East Rutherford'),
 ('Chicago Bears', 8, 'NFC', 'North', 'Chicago');
 
+
 -- Seasons
 INSERT INTO Season (champion, year) VALUES
 (4, 2024),
@@ -149,3 +150,7 @@ INSERT INTO UserAccount (username, password_hash, email, role_id) VALUES
 ('coach1', '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm', 'coach@football.com', 3),
 ('player1', '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'player@football.com', 2),
 ('fan1', '$2y$10$Ow2wuFWyCoUtaCXNuxIaT.D.nYXnF88WO8T8.s0E7440N921NLmEe', 'fan@football.com', 1);
+
+-- Coaches
+INSERT INTO Coach (user_id, team_id, first_name, last_name) VALUES
+(2, 1, "Los Angeles Rams", "Coach");

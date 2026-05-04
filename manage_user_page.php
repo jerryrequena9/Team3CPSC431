@@ -5,13 +5,14 @@
 
   do_html_header('Manage Users'); 
   check_valid_user();
-
-  handle_manage_user();
-  handle_add_user();
   display_user_nav();
+
+  display_manage_user();
+  display_add_user();
   do_html_footer();
 
-  function handle_manage_user() {
+  function display_manage_user() {
+    echo "<h2>Edit Users</h2>";
     $query = "
       SELECT u.username, r.name as role, u.email, u.last_login
       FROM UserAccount u
@@ -19,19 +20,15 @@
       ORDER BY u.role_id DESC
     ";
     global $db;
-    try {
-      $result = $db->query($query);
-    } catch (Exception $e) {
-      err_permission_denied();
-    }
+    $result = query_with_perms($db, $query);
     echo "<table>";
     echo "<tr>
             <th>Role</th>
             <th>Username</th>
             <th>Email</th>
             <th>Last Login</th>
-            <th>Delete User</th>
             <th>Change Password</th>
+            <th>Delete User</th>
           </tr>";
 
     while ($row = $result->fetch_assoc()) {
@@ -39,31 +36,34 @@
       // Dropdown for changing role
       echo "<td>
               <form method='post' action='change_role.php'>
-                <input type='hidden' name='manage_user_username' value='" . htmlspecialchars($row['username']) . "'>
-                  <select name='manage_user_role' onchange='this.form.submit()'>
-                      <option value='Fan' " . ($row['role'] == 'Fan' ? 'selected' : '') . ">Fan</option>
-                      <option value='Player' " . ($row['role'] == 'Player' ? 'selected' : '') . ">Player</option>
-                      <option value='Coach' " . ($row['role'] == 'Coach' ? 'selected' : '') . ">Coach</option>
-                      <option value='Manager' " . ($row['role'] == 'Manager' ? 'selected' : '') . ">Manager</option>
+                <input type='hidden' name='manage_user_username' value='" . sanitize_str($row['username']) . "'>
+                  <select name='manage_user_role' onchange='this.form.submit()'>";
+                  global $DBRoles;
+                  foreach ($DBRoles as $role) {
+                      echo "<option value='$role'" . ($row['role'] == $role ? ' selected' : '') . ">$role</option>";
+                  }
+      echo "
                   </select>
-                  <input type='hidden' name='username' value='" . htmlspecialchars($row['username']) . "'>
+                  <input type='hidden' name='username' value='" . sanitize_str($row['username']) . "'>
               </form>
             </td>";
-      echo "<td>" . htmlspecialchars($row['username']) . "</td>";
-      echo "<td>" . htmlspecialchars($row['email']) . "</td>";
-      echo "<td>" . htmlspecialchars($row['last_login']) . "</td>";
+      echo "<td>" . sanitize_str($row['username']) . "</td>";
+      echo "<td>" . sanitize_str($row['email']) . "</td>";
+      echo "<td>" . sanitize_str($row['last_login']) . "</td>";
+
       echo "<td>";
-      echo '<form method="post" action="delete_user.php">
-              <input type="hidden" name="manage_user_delete_username" value="' . htmlspecialchars($row['username']) . '">
-              <input type="submit" value="Delete User">
+      echo '<form method="post" action="force_change_password.php">
+              <input type="hidden" name="manage_user_change_password_username" value="' . sanitize_str($row['username']) . '">
+              <input type="text" placeholder="New password" name="manage_user_change_new_password">
+              <input type="submit" value="Change Password">
             </form>
       ';
       echo "</td>";
+
       echo "<td>";
-      echo '<form method="post" action="force_change_password.php">
-              <input type="hidden" name="manage_user_change_password_username" value="' . htmlspecialchars($row['username']) . '">
-              <input type="text" placeholder="New password" name="manage_user_change_new_password">
-              <input type="submit" value="Change Password">
+      echo '<form method="post" action="delete_user.php">
+              <input type="hidden" name="manage_user_delete_username" value="' . sanitize_str($row['username']) . '">
+              <input type="submit" value="Delete">
             </form>
       ';
       echo "</td>";
@@ -73,7 +73,7 @@
     echo "</table>";
   }
   
-  function handle_add_user() {
+  function display_add_user() {
     echo '
       <br>
       <h2>Add User</h2>

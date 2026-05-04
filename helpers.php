@@ -11,9 +11,9 @@ function sanitize_str($data) {
 /**
  * Check that all form fields are filled out
  */
-function is_valid_post($form_vars) {
-  foreach ($form_vars as $value) {
-    if (!isset($value) || $value === '') {
+function is_valid_post($form_vars, $not_required=[]) {
+  foreach ($form_vars as $key => $value) {
+    if (!in_array($key, $not_required) && (!isset($value) || $value === '')) {
       return false;
     }
   }
@@ -70,10 +70,9 @@ function require_any_role($roles) {
 }
 
 // Generic error page for permission errors
+// For logined users
 function err_permission_denied() {
-  do_html_header('Permission Denied');
-  display_user_nav();
-  do_html_footer();
+  header('Location: permission_denied_page.php');
   exit;
 }
 

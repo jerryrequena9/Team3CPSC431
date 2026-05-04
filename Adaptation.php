@@ -34,4 +34,6 @@
                   'Coach'  => 'coach_pass',
                   'Player' => 'player_pass',
                   'Fan'    => 'fan_pass'];
+
+  $DBRoles = ['Manager', 'Coach', 'Player', 'Fan'];
 ?>

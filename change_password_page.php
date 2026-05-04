@@ -5,6 +5,7 @@
 
   do_html_header('Change Password');
   check_valid_user();
+  display_user_nav();
 
   echo '
     <form method="post" action="change_password.php">
@@ -20,7 +21,6 @@
         <input type="submit" value="Change Password"><br><br>
     </form>
   ';
-  display_user_nav();
 
   do_html_footer();
 ?>
