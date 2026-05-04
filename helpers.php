@@ -28,31 +28,49 @@ function valid_email($address) {
 }
 
 /**
- * Check if user is logged in (UPDATED TO MATCH YOUR LOGIN SYSTEM)
+ * Check whether the current session represents a valid logged-in user.
+ */
+function authenticatedUser() {
+  global $DBPasswords;
+
+  return isset($_SESSION['UserName']) && !empty($_SESSION['UserName']) &&
+         isset($_SESSION['UserRole']) && !empty($_SESSION['UserRole']) &&
+         isset($DBPasswords[$_SESSION['UserRole']]);
+}
+
+/**
+ * Require a valid logged-in user.
  */
 function check_valid_user() {
-
-  // Check session variables set during login
-  if (isset($_SESSION['UserName']) && isset($_SESSION['UserRole'])) {
-
-    echo "Logged in as <b>" . $_SESSION['UserName'] . "</b> (" . $_SESSION['UserRole'] . ")<br><br>";
-
-  } else {
-
-    // User not logged in
+  if (!authenticatedUser()) {
     do_html_header('Problem');
     echo 'You are not logged in.<br>';
     echo "<a href='login_page.php'>Login</a>";
     do_html_footer();
     exit;
   }
+
+  echo "Logged in as <b>" . htmlspecialchars($_SESSION['UserName']) . "</b> ";
+  echo "Role: <b>" . htmlspecialchars($_SESSION['UserRole']) . "</b><br><br>";
 }
 
 /**
- * Optional helper: enforce role-based access (use later)
+ * Require a specific role.
  */
 function require_role($role) {
   if (!isset($_SESSION['UserRole']) || $_SESSION['UserRole'] !== $role) {
+    do_html_header('Access Denied');
+    echo "You do not have permission to access this page.<br>";
+    do_html_footer();
+    exit;
+  }
+}
+
+/**
+ * Require one of several allowed roles.
+ */
+function require_any_role($roles) {
+  if (!isset($_SESSION['UserRole']) || !in_array($_SESSION['UserRole'], $roles)) {
     do_html_header('Access Denied');
     echo "You do not have permission to access this page.<br>";
     do_html_footer();

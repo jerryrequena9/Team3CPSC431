@@ -1,6 +1,7 @@
 <?php
+  require_once('StartSession.php');
   require_once("html_components");
-  do_html_header("User Registration");
+  do_html_header("Register");
 
   display_registration_form();
 

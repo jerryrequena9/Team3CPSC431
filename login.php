@@ -8,9 +8,8 @@ require_once('helpers.php');
 // Include HTML components for header/footer display
 require_once('html_components.php');
 
-
 // Check if form data was submitted
-if (!isset($_POST['username']) || !isset($_POST['password'])) {
+if (!filled_out($_POST)) {
     // If not, redirect back to login page
     header("Location: login_page.php");
     exit;
@@ -32,11 +31,10 @@ try {
     // If login fails, display error message
     do_html_header('Login Failed');
     echo "Error: " . $e->getMessage() . "<br>";
-    echo "<a href='login_page.php'>Try again</a>";
+    echo "<a href='login_page.php'>Login</a>";
     do_html_footer();
     exit;
 }
-
 
 /**
  * Function: login
@@ -47,11 +45,11 @@ try {
 function login($username, $password) {
 
     // Access the global database connection from StartSession.php
-    global $db;
+    $db = db_connect();
 
     // Query to retrieve user credentials and role
     $query = "
-        SELECT 
+        SELECT
             u.user_id,
             u.username,
             u.password_hash,
@@ -63,18 +61,9 @@ function login($username, $password) {
 
     // Prepare SQL statement
     $stmt = $db->prepare($query);
-    if (!$stmt) {
-        throw new Exception("Query preparation failed");
+    if (!$stmt || !$stmt->bind_param("s", $username) || !$stmt->execute() || !$stmt->store_result()) {
+      throw new Exception("Login failed");
     }
-
-    // Bind username parameter
-    $stmt->bind_param("s", $username);
-
-    // Execute query
-    $stmt->execute();
-
-    // Store result for checking number of rows
-    $stmt->store_result();
 
     // If no user found, throw error
     if ($stmt->num_rows !== 1) {
@@ -82,10 +71,9 @@ function login($username, $password) {
     }
 
     // Bind results to variables
-    $stmt->bind_result($user_id, $db_username, $hash, $role);
-
-    // Fetch result
-    $stmt->fetch();
+    if (!$stmt->bind_result($user_id, $db_username, $hash, $role) || !$stmt->fetch()) {
+        throw new Exception("Login failed");
+    }
 
     // Verify password using hashed password
     if (!password_verify($password, $hash)) {
