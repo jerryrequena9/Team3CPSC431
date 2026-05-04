@@ -13,10 +13,7 @@ $role = $_SESSION['UserRole'];
 
 echo "<h4>Available Data:</h4>";
 
-// Fan, Player, Coach, and Manager can view teams
-if ($role === 'Fan' || $role === 'Player' || $role === 'Coach' || $role === 'Manager') {
-    display_teams($db);
-}
+display_teams($db);
 
 // Player, Coach, and Manager can view recent games
 if ($role === 'Player' || $role === 'Coach' || $role === 'Manager') {
@@ -28,9 +25,7 @@ if ($role === 'Coach' || $role === 'Manager') {
     display_player_games($db);
 }
 
-if ($role === 'Coach' || $role === 'Manager') {
-    echo "<a href='manage_player_team.php'>Manage Player Teams</a><br>";
-}
+echo "<a href='manage_player_team.php'>Manage Player Teams</a><br>";
 
 display_user_nav();
 

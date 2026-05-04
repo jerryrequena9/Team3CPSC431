@@ -88,6 +88,17 @@ function prepare_with_perms($db, $query) {
   }
 }
 
+// Query with db permissions
+// ALL queries should use this function
+function query_with_perms($db, $query) {
+  try {
+    $result = $db->query($query);
+    return $result;
+  } catch (Exception $e) {
+    err_permission_denied();
+  }
+}
+
 // Validate password
 function validate_password($password) {
   // Check for valid password length

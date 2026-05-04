@@ -46,6 +46,7 @@ function display_user_nav() {
   <a href='logout.php'>Logout</a>
   <a href='change_password_page.php'>Change Password</a>
   <a href='manage_user_page.php'>Manage Users</a>
+  <a href='manage_player_stats_page.php'>Manage Player Stats</a>
 <?php
 }
 
