@@ -1,28 +1,28 @@
 <?php
-  require_once('StartSession.php');
-  require_once('html_components.php');
+session_start();
 
-  $old_user = $_SESSION['UserName'];
-  unset($_SESSION['UserName']);
-  $result_dest = session_destroy();
+// Clear all session variables
+$_SESSION = array();
 
-  // start output html
-  do_html_header('Logging Out');
-  check_valid_user();
-  if (!empty($old_user)) {
-    if ($result_dest) {
-      // if they were logged in and are now logged out
-      header('Location: login.php');
-      exit;
-    } else {
-      // they were logged in and could not be logged out
-      echo 'Could not log you out.';
-      }
-  } else {
-    // if they weren't logged in but came to this page somehow
-    echo 'You were not logged in, and so have not been logged out.<br>';
-    echo "<a href='login_page.php'>Login</a>";
-  }
+// Destroy the session cookie if it exists
+if (ini_get("session.use_cookies")) {
+  $params = session_get_cookie_params();
 
-  do_html_footer();
+  setcookie(
+    session_name(),
+    '',
+    time() - 42000,
+    $params["path"],
+    $params["domain"],
+    $params["secure"],
+    $params["httponly"]
+  );
+}
+
+// Destroy the session
+session_destroy();
+
+// Redirect to login page
+header("Location: login_page.php");
+exit;
 ?>

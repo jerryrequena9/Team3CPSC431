@@ -45,8 +45,8 @@ try {
 function login($username, $password) {
 
     // Access the global database connection from StartSession.php
-    $db = db_connect();
-
+    global $db;
+    
     // Query to retrieve user credentials and role
     $query = "
         SELECT
