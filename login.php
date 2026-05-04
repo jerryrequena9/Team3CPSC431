@@ -80,7 +80,21 @@ function login($username, $password) {
         throw new Exception("Invalid password");
     }
 
-    // Store session variables (must match StartSession.php expectations)
+    // Login successful
+    // Query to update user login time
+    $query = "
+        UPDATE UserAccount
+        SET last_login = NOW()
+        WHERE username = ?
+    ";
+
+    // Prepare SQL statement
+    $stmt = $db->prepare($query);
+    if (!$stmt || !$stmt->bind_param("s", $username) || !$stmt->execute()) {
+      throw new Exception("Login failed");
+    }
+
+    // Store session variables
     $_SESSION['UserName'] = $db_username;
     $_SESSION['UserRole'] = $role;
     $_SESSION['UserID'] = $user_id;

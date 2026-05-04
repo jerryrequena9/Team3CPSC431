@@ -1,16 +1,16 @@
 <?php
-  require('StartSession.php');
-  require('helpers.php');
-  require('html_components.php');
+  require_once('StartSession.php');
+  require_once('helpers.php');
+  require_once('html_components.php');
 
   do_html_header("Change Password");
   check_valid_user();
 
   if (!filled_out($_POST)) {
-    header('Location: change_password.php');
+    header('Location: change_password_page.php');
     exit;
   }
-
+  
   try {
     $username = $_SESSION['UserName'];
     $old_password = sanitize_str($_POST['change_old_password']);
@@ -37,8 +37,7 @@
   }
 
   function change_password($username, $old_password, $new_password) {
-    $db = db_connect();
-
+    global $db;
     $query = "
       SELECT password_hash
       FROM UserAccount

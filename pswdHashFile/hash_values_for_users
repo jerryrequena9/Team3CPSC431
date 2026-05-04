@@ -1,19 +1,19 @@
 -- manager1 password: ManagerPass123!
 UPDATE UserAccount
-SET password_hash = '$2y$10$ZtONA431NVTqTVj.PqwBKOomuc39KzejQ0xVqYwvzNcu5BHt/ndT.'
+SET password_hash = '$2y$10$J8QZ4j1Q8DAf.pM28SXzUOS1YBa5p29ysl6JZdYf9rWXUsTXinGHa'
 WHERE username = 'manager1';
 
 -- coach1 password: CoachPass123!
 UPDATE UserAccount
-SET password_hash = '$2y$10$qYU6hWcXFpfypBY44MaxXuwudN2X4hm5x9vrT6krjhTzdIenODPHS'
+SET password_hash = '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm'
 WHERE username = 'coach1';
 
 -- player1 password: PlayerPass123!
 UPDATE UserAccount
-SET password_hash = '$2y$10$znkhq0bbHC0a8Jw5XtPH2O3LFzSr36JkYRqNoF37SbO7MX9DAZe9.'
+SET password_hash = '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO'
 WHERE username = 'player1';
 
 -- fan1 password: FanPass123!
 UPDATE UserAccount
-SET password_hash = '$2y$10$U8WujKSZDiDUlW4fBBZbcOKDhE0Fb5kLUQKr5buNWiICbIb6POZc6'
+SET password_hash = '$2y$10$Ow2wuFWyCoUtaCXNuxIaT.D.nYXnF88WO8T8.s0E7440N921NLmEe'
 WHERE username = 'fan1';

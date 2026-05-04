@@ -46,8 +46,8 @@ INSERT INTO Stat (player_id, game_id, touchdowns, passing_yards, rushing_yards, 
 (4, 3, 1, 200, 25, 45, 2, 0);
 
 -- User Accounts
-INSERT INTO UserAccount (username, password_hash, email, role_id, is_active) VALUES
-('manager1', '$2y$10$ZtONA431NVTqTVj.PqwBKOomuc39KzejQ0xVqYwvzNcu5BHt/ndT.', 'manager@football.com', 4, TRUE),
-('coach1', '$2y$10$qYU6hWcXFpfypBY44MaxXuwudN2X4hm5x9vrT6krjhTzdIenODPHS', 'coach@football.com', 3, TRUE),
-('player1', '$2y$10$znkhq0bbHC0a8Jw5XtPH2O3LFzSr36JkYRqNoF37SbO7MX9DAZe9.', 'player@football.com', 2, TRUE),
-('fan1', '$2y$10$U8WujKSZDiDUlW4fBBZbcOabc123examplehash', 'fan@football.com', 1, TRUE);
+INSERT INTO UserAccount (username, password_hash, email, role_id) VALUES
+('manager1', '$2y$10$J8QZ4j1Q8DAf.pM28SXzUOS1YBa5p29ysl6JZdYf9rWXUsTXinGHa', 'manager@football.com', 4),
+('coach1', '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm', 'coach@football.com', 3),
+('player1', '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'player@football.com', 2),
+('fan1', '$2y$10$Ow2wuFWyCoUtaCXNuxIaT.D.nYXnF88WO8T8.s0E7440N921NLmEe', 'fan@football.com', 1);

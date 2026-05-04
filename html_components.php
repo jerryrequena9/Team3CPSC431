@@ -39,79 +39,12 @@ function do_html_footer() {
 <?php
 }
 
-function display_login_form() {
-?>
-  <form method="post" action="login.php">
-      <label>Username:</label><br>
-      <input type="text" name="username"><br><br>
-
-      <label>Password:</label><br>
-      <input type="password" name="password"><br><br>
-
-      <input type="submit" name="login" value="Login"><br><br>
-
-      <a href="forgot_password_page.php">Forgot Password?</a><br>
-      <a href="register_user_page.php">Register</a>
-  </form>
-<?php
-}
-
-function display_register_form() {
-?>
-  <form method="post" action="register_user.php">
-      <label>Email:</label><br>
-      <input type="email" name="email"><br><br>
-
-      <label>Username:</label><br>
-      <input type="text" name="username"><br><br>
-
-      <label>Password:</label><br>
-      <input type="password" name="password"><br><br>
-
-      <label>Confirm Password:</label><br>
-      <input type="password" name="confirm_password"><br><br>
-
-      <input type="submit" name="register" value="Register"><br><br>
-
-      <a href="login_page.php">Login</a>
-  </form>
-<?php
-}
-
 function display_user_nav() {
 ?>
   <br>
   <a href='home_page.php'>Home</a>
   <a href='logout.php'>Logout</a>
   <a href='change_password_page.php'>Change Password</a>
-<?php
-}
-
-function display_change_password_form() {
-?>
-  <form method="post" action="change_password.php">
-      <label>Old Password:</label><br>
-      <input type="password" name="change_old_password"><br><br>
-
-      <label>New Password:</label><br>
-      <input type="password" name="change_new_password"><br><br>
-
-      <label>Repeat New Password:</label><br>
-      <input type="password" name="change_repeat_new_password"><br><br>
-
-      <input type="submit" name="change_password" value="Submit"><br><br>
-  </form>
-<?php
-}
-
-function display_forgot_password_form() {
-?>
-  <form method="post" action="forgot_password.php">
-      <label>Username:</label><br>
-      <input type="text" name="forgot_username"><br><br>
-
-      <input type="submit" name="forgot_password" value="Submit"><br><br>
-  </form>
 <?php
 }
 

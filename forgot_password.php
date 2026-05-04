@@ -1,12 +1,12 @@
 <?php
-  require('StartSession.php');
-  require('html_components.php');
-  require('helpers.php');
+  require_once('StartSession.php');
+  require_once('html_components.php');
+  require_once('helpers.php');
 
-  do_html_header('Resetting Password');
+  do_html_header('Password Reset');
 
   if (!filled_out($_POST)) {
-    header('Location: forgot_password.php');
+    header('Location: forgot_password_page.php');
     exit;
   }
   try {
@@ -27,7 +27,7 @@
     $new_password = bin2hex(openssl_random_pseudo_bytes(4));
     $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-    $db = db_connect();
+    global $db;
     $query = "
       UPDATE UserAccount
       SET password_hash = ?
@@ -48,7 +48,6 @@
 
   function email_password($username, $password) {
     // notify the user that their password has been changed
-    $db = db_connect();
     $query = "
       SELECT email
       FROM UserAccount

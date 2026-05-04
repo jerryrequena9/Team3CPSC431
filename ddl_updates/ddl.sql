@@ -20,7 +20,6 @@ CREATE TABLE UserAccount (
     password_hash CHAR(60)     NOT NULL,
     email         VARCHAR(200) NOT NULL,
     last_login    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-    is_active     BOOLEAN      DEFAULT FALSE,
 
     FOREIGN KEY (role_id)
         REFERENCES Role(role_id)

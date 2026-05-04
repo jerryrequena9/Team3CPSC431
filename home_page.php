@@ -1,8 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 require_once("StartSession.php");
 require_once("html_components.php");
 require_once("helpers.php");
@@ -14,10 +10,6 @@ check_valid_user();
 
 // Get current role
 $role = $_SESSION['UserRole'];
-
-// Display user info
-echo "<h3>Welcome, " . htmlspecialchars($_SESSION['UserName']) . "</h3>";
-echo "<p>Your role: <b>" . htmlspecialchars($role) . "</b></p><br>";
 
 echo "<h4>Available Data:</h4>";
 
@@ -40,6 +32,7 @@ if ($role === 'Coach' || $role === 'Manager') {
     echo "<a href='manage_player_team.php'>Manage Player Teams</a><br>";
 }
 
+echo "<a href='manage_users_page.php'>Manage Users</a><br>";
 echo "<br>";
 display_user_nav();
 
