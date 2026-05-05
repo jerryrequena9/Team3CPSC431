@@ -13,10 +13,12 @@
 
   function display_manage_user() {
     echo "<h2>Edit Users</h2>";
+
     $query = "
       SELECT u.username, r.name as role, u.email, u.last_login
       FROM UserAccount u
-      JOIN Role r ON r.role_id = u.role_id
+      JOIN Role r
+        ON r.role_id = u.role_id
       ORDER BY u.role_id DESC
     ";
     global $db;

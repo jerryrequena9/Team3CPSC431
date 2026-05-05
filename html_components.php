@@ -52,6 +52,7 @@ function display_user_nav() {
   <a href='manage_team_page.php'>Manage Teams</a>
   <a href='manage_stadium_page.php'>Manage Stadiums (WIP)</a>
   <a href='manage_season_page.php'>Manage Seasons (WIP)</a>
+  <a href='manage_game_page.php'>Manage Games (WIP)</a>
   <hr>
 <?php
 }

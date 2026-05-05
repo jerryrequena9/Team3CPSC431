@@ -23,7 +23,7 @@ CREATE TABLE UserAccount (
 
     FOREIGN KEY (role_id)
         REFERENCES Role(role_id)
-        ON DELETE RESTRICT
+        ON DELETE RESTRICT,
 
     CHECK (CHAR_LENGTH(username) >= 4)
 );
