@@ -25,7 +25,6 @@ if (!$stmt || !$stmt->bind_param("i", $player_id) || !$stmt->execute()) {
 }
 $stmt->bind_result($existing_id);
 $stmt->fetch();
-$stmt->free_result();
 $stmt->close();
 
 if ($existing_id) {
