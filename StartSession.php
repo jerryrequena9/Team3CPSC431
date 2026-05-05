@@ -28,6 +28,6 @@ $DBPassword = $DBPasswords[$DBName];
 $db = new mysqli(DATA_BASE_HOST, $DBName, $DBPassword, DATA_BASE_NAME);
 
 if ($db->connect_errno) {
-  die("Error: failed to make a MySQL connection: " . $db->connect_error);
+  die("Error: failed to make a MySQL connection");
 }
 ?>
