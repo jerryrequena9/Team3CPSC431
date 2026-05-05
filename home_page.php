@@ -9,13 +9,5 @@ do_html_header('Home');
 check_valid_user();
 display_user_nav();
 
-// display_teams($db);
-
-// Player, Coach, and Manager can view recent games
-// if ($role === 'Player' || $role === 'Coach' || $role === 'Manager') {
-//     display_recent_games($db);
-// }
-
-
 do_html_footer();
 ?>
