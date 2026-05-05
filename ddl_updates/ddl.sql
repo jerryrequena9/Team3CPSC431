@@ -18,7 +18,7 @@ CREATE TABLE UserAccount (
     role_id       INT UNSIGNED DEFAULT 1,
     username      VARCHAR(50)  NOT NULL UNIQUE,
     password_hash CHAR(60)     NOT NULL,
-    email         VARCHAR(200) NOT NULL,
+    email         VARCHAR(254) NOT NULL,
     last_login    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (role_id)
@@ -144,8 +144,8 @@ CREATE TABLE Game (
     stadium_id   INT UNSIGNED,
     week         INT UNSIGNED,
     date         DATE NOT NULL,
-    home_score   INT NOT NULL,
-    away_score   INT NOT NULL,
+    home_score   INT UNSIGNED NOT NULL,
+    away_score   INT UNSIGNED NOT NULL,
 
     FOREIGN KEY (season_id)
         REFERENCES Season(season_id)
