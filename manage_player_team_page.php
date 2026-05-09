@@ -7,6 +7,14 @@ do_html_header("Manage Player Teams");
 check_valid_user();
 display_user_nav();
 
+if (isset($_GET['success'])) {
+    echo "<p style='color:green; font-weight:bold;'>" . htmlspecialchars($_GET['success']) . "</p>";
+}
+
+if (isset($_GET['error'])) {
+    echo "<p style='color:red; font-weight:bold;'>" . htmlspecialchars($_GET['error']) . "</p>";
+}
+
 echo "<h3>Coach/Manager Use Case: Add or Remove Players from Teams</h3>";
 
 display_add_player_form();

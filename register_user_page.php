@@ -6,7 +6,7 @@
   echo '
     <form method="post" action="register_user.php">
         <label>Email:</label><br>
-        <input type="email" name="email"><br><br>
+        <input type="email" name="register_email"><br><br>
 
         <label>Username:</label><br>
         <input type="text" name="register_username"><br><br>

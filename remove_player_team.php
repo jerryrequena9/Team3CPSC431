@@ -26,6 +26,6 @@ if ($stmt->affected_rows == 0) {
 }
 $stmt->close();
 
-header("Location: manage_player_team_page.php");
+header("Location: manage_player_team_page.php?success=Player removed from team successfully");
 exit;
 ?>

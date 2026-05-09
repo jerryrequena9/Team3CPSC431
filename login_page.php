@@ -3,6 +3,14 @@ require_once("html_components.php");
 
 do_html_header("Login");
 
+if (isset($_GET['success'])) {
+    echo "<p style='color:green; font-weight:bold;'>" . htmlspecialchars($_GET['success']) . "</p>";
+}
+
+if (isset($_GET['error'])) {
+    echo "<p style='color:red; font-weight:bold;'>" . htmlspecialchars($_GET['error']) . "</p>";
+}
+
 echo '
   <form method="post" action="login.php">
       <label>Username:</label><br>
@@ -16,7 +24,6 @@ echo '
       <a href="forgot_password_page.php">Forgot Password?</a><br>
       <a href="register_user_page.php">Register</a>
   </form>
-<?php
 ';
 
 do_html_footer();

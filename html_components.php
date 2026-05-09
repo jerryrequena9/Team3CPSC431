@@ -7,14 +7,41 @@ function do_html_header($title) {
 <head>
   <meta charset="utf-8">
   <title><?php echo htmlspecialchars($title); ?></title>
+
   <style>
-    body { font-family: Arial, Helvetica, sans-serif; font-size: 13px; }
-    li, td, th { font-family: Arial, Helvetica, sans-serif; font-size: 13px; }
-    hr { color: #3333cc; }
-    a { color: #000; margin-right: 10px; }
-    table { border-collapse: collapse; margin-bottom: 20px; }
-    th { background: #ddd; }
-    th, td { padding: 6px; border: 1px solid #333; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+
+    li, td, th {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+
+    hr {
+      color: #3333cc;
+    }
+
+    a {
+      color: #000;
+      margin-right: 10px;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th {
+      background: #ddd;
+    }
+
+    th, td {
+      padding: 6px;
+      border: 1px solid #333;
+    }
+
     div.formblock {
       background: #ccc;
       width: 300px;
@@ -23,7 +50,9 @@ function do_html_header($title) {
     }
   </style>
 </head>
+
 <body>
+
 <hr/>
 
 <?php
@@ -40,36 +69,103 @@ function do_html_footer() {
 }
 
 function display_user_nav() {
-?>
-  <a href='home_page.php'>Home</a>
-  <a href='logout.php'>Logout</a>
-  <a href='change_password_page.php'>Change Password</a>
-  <a href='manage_user_page.php'>Manage Users</a>
-  <a href='manage_player_stats_page.php'>Manage Player Stats</a>
-  <a href='manage_player_team_page.php'>Manage Player Teams</a>
-  <a href='manage_player_page.php'>Manage Players (WIP)</a>
-  <a href='manage_coach_page.php'>Manage Coaches (WIP)</a>
-  <a href='manage_team_page.php'>Manage Teams</a>
-  <a href='manage_stadium_page.php'>Manage Stadiums (WIP)</a>
-  <a href='manage_season_page.php'>Manage Seasons (WIP)</a>
-  <a href='manage_game_page.php'>Manage Games (WIP)</a>
-  <hr>
-<?php
+
+  echo "<a href='home_page.php'>Home</a>";
+  echo "<a href='logout.php'>Logout</a>";
+  echo "<a href='change_password_page.php'>Change Password</a>";
+
+  /*
+   * The role value is not hardcoded in PHP.
+   * UserRole is assigned from the database during login:
+   * UserAccount joins Role, then the returned Role.name is stored in session.
+   *
+   * These checks only control navigation/UI visibility.
+   * Actual authorization is still enforced by MySQL role-specific DB accounts
+   * and table-level GRANT permissions.
+   */
+
+  // Manager-only navigation links
+  if ($_SESSION['UserRole'] === 'Manager') {
+
+    echo "<a href='manage_user_page.php'>Manage Users</a>";
+
+    echo "<a href='manage_team_page.php'>Manage Teams</a>";
+
+    echo "<a href='manage_stadium_page.php'>
+            Manage Stadiums (WIP)
+          </a>";
+
+    echo "<a href='manage_season_page.php'>
+            Manage Seasons (WIP)
+          </a>";
+
+    echo "<a href='manage_game_page.php'>
+            Manage Games (WIP)
+          </a>";
+  }
+
+  /*
+   * Read-only football data views available to all authenticated users.
+   * Fan users should only have SELECT permissions at the database layer.
+   */
+
+  echo "<a href='view_teams.php'>View Teams</a>";
+
+  echo "<a href='view_games.php'>View Games</a>";
+
+  echo "<a href='view_player_stats.php'>
+          View Player Stats
+        </a>";
+
+  // Coach + Manager navigation links
+  if (
+      $_SESSION['UserRole'] === 'Coach' ||
+      $_SESSION['UserRole'] === 'Manager'
+  ) {
+
+    echo "<a href='manage_player_stats_page.php'>
+            Manage Player Stats
+          </a>";
+
+    echo "<a href='manage_player_team_page.php'>
+            Manage Player Teams
+          </a>";
+
+    echo "<a href='manage_player_page.php'>
+            Manage Players (WIP)
+          </a>";
+
+    echo "<a href='manage_coach_page.php'>
+            Manage Coaches (WIP)
+          </a>";
+  }
+
+  echo "<hr>";
 }
 
 function display_error_exit($err) {
+
   do_html_header("Error");
-  echo "Error: ".$err."<br>";
+
+  echo "Error: " . htmlspecialchars($err) . "<br>";
+
   display_user_nav();
+
   do_html_footer();
+
   exit;
 }
 
 function display_teams($db) {
+
   echo "<h3>Fan Use Case: What teams are in the league?</h3>";
 
   $query = "
-    SELECT name, city, conference, division
+    SELECT
+      name,
+      city,
+      conference,
+      division
     FROM Team
     ORDER BY conference, division, city
   ";
@@ -77,11 +173,16 @@ function display_teams($db) {
   $result = $db->query($query);
 
   if (!$result) {
-    echo "Error loading teams: " . htmlspecialchars($db->error) . "<br>";
+
+    echo "Error loading teams: " .
+         htmlspecialchars($db->error) .
+         "<br>";
+
     return;
   }
 
   echo "<table>";
+
   echo "<tr>
           <th>Team</th>
           <th>City</th>
@@ -90,11 +191,25 @@ function display_teams($db) {
         </tr>";
 
   while ($row = $result->fetch_assoc()) {
+
     echo "<tr>";
-    echo "<td>" . htmlspecialchars($row['name']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['city']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['conference']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['division']) . "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['name']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['city']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['conference']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['division']) .
+         "</td>";
+
     echo "</tr>";
   }
 
@@ -102,7 +217,8 @@ function display_teams($db) {
 }
 
 function display_recent_games($db) {
-  echo "<h3>Player Use Case: What teams played last this season?</h3>";
+
+  echo "<h3>Player Use Case: What teams played this season?</h3>";
 
   $query = "
     SELECT
@@ -113,9 +229,12 @@ function display_recent_games($db) {
       g.home_score,
       g.away_score
     FROM Game g
-    JOIN Team home ON g.home_team_id = home.team_id
-    JOIN Team away ON g.away_team_id = away.team_id
-    JOIN Season s ON g.season_id = s.season_id
+    JOIN Team home
+      ON g.home_team_id = home.team_id
+    JOIN Team away
+      ON g.away_team_id = away.team_id
+    JOIN Season s
+      ON g.season_id = s.season_id
     WHERE s.year = 2025
     ORDER BY g.date DESC
     LIMIT 5
@@ -124,11 +243,16 @@ function display_recent_games($db) {
   $result = $db->query($query);
 
   if (!$result) {
-    echo "Error loading recent games: " . htmlspecialchars($db->error) . "<br>";
+
+    echo "Error loading recent games: " .
+         htmlspecialchars($db->error) .
+         "<br>";
+
     return;
   }
 
   echo "<table>";
+
   echo "<tr>
           <th>Week</th>
           <th>Date</th>
@@ -138,12 +262,33 @@ function display_recent_games($db) {
         </tr>";
 
   while ($row = $result->fetch_assoc()) {
+
     echo "<tr>";
-    echo "<td>" . htmlspecialchars($row['week']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['date']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['home_team']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['away_team']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['home_score'] . " - " . $row['away_score']) . "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['week']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['date']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['home_team']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['away_team']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars(
+            $row['home_score'] .
+            " - " .
+            $row['away_score']
+         ) .
+         "</td>";
+
     echo "</tr>";
   }
 
@@ -151,7 +296,8 @@ function display_recent_games($db) {
 }
 
 function display_player_games($db) {
-  echo "<h3>Coach Use Case: What games did Player X play in?</h3>";
+
+  echo "<h3>Player Statistics</h3>";
 
   $query = "
     SELECT
@@ -167,21 +313,30 @@ function display_player_games($db) {
       s.rushing_yards,
       s.receiving_yards
     FROM Stat s
-    JOIN Player p ON s.player_id = p.player_id
-    JOIN Game g ON s.game_id = g.game_id
-    JOIN Team home ON g.home_team_id = home.team_id
-    JOIN Team away ON g.away_team_id = away.team_id
+    JOIN Player p
+      ON s.player_id = p.player_id
+    JOIN Game g
+      ON s.game_id = g.game_id
+    JOIN Team home
+      ON g.home_team_id = home.team_id
+    JOIN Team away
+      ON g.away_team_id = away.team_id
     ORDER BY p.last_name, g.date DESC
   ";
 
   $result = $db->query($query);
 
   if (!$result) {
-    echo "Error loading player games: " . htmlspecialchars($db->error) . "<br>";
+
+    echo "Error loading player games: " .
+         htmlspecialchars($db->error) .
+         "<br>";
+
     return;
   }
 
   echo "<table>";
+
   echo "<tr>
           <th>Player</th>
           <th>Position</th>
@@ -195,16 +350,53 @@ function display_player_games($db) {
         </tr>";
 
   while ($row = $result->fetch_assoc()) {
+
     echo "<tr>";
-    echo "<td>" . htmlspecialchars($row['first_name'] . " " . $row['last_name']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['position']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['week']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['date']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['away_team'] . " at " . $row['home_team']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['touchdowns']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['passing_yards']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['rushing_yards']) . "</td>";
-    echo "<td>" . htmlspecialchars($row['receiving_yards']) . "</td>";
+
+    echo "<td>" .
+         htmlspecialchars(
+            $row['first_name'] .
+            " " .
+            $row['last_name']
+         ) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['position']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['week']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['date']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars(
+            $row['away_team'] .
+            " at " .
+            $row['home_team']
+         ) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['touchdowns']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['passing_yards']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['rushing_yards']) .
+         "</td>";
+
+    echo "<td>" .
+         htmlspecialchars($row['receiving_yards']) .
+         "</td>";
+
     echo "</tr>";
   }
 

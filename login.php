@@ -24,7 +24,7 @@ try {
     login($username, $password);
 
     // If successful, redirect to home page
-    header("Location: home_page.php");
+    header("Location: home_page.php?success=Login successful");
     exit;
 
 } catch (Exception $e) {
@@ -97,5 +97,34 @@ function login($username, $password) {
     $_SESSION['UserName'] = $db_username;
     $_SESSION['UserRole'] = $role;
     $_SESSION['UserID'] = $user_id;
+    
+    /*
+ * Store the Coach's assigned team_id in session.
+ * This does not grant permission by itself.
+*/
+if ($role === 'Coach') {
+    $coach_query = "
+        SELECT team_id
+        FROM Coach
+        WHERE user_id = ?
+        LIMIT 1
+    ";
+
+    $coach_stmt = prepare_with_perms($db, $coach_query);
+
+    if (!$coach_stmt || !$coach_stmt->bind_param("i", $user_id) || !$coach_stmt->execute()) {
+        throw new Exception("Login failed while loading coach team");
+    }
+
+    $coach_stmt->bind_result($coach_team_id);
+
+    if (!$coach_stmt->fetch()) {
+        throw new Exception("Coach account is not assigned to a team");
+    }
+
+    $_SESSION['team_id'] = intval($coach_team_id);
+
+    $coach_stmt->close();
+}
 }
 ?>

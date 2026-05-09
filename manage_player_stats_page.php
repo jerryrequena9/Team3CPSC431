@@ -7,6 +7,16 @@
     check_valid_user();
     display_user_nav();
 
+    // Display confirmation message after successful edit/delete actions
+    if (isset($_GET['success'])) {
+        echo "<p style='color:green; font-weight:bold;'>" . htmlspecialchars($_GET['success']) . "</p>";
+    }
+
+    // Display error message if an action fails
+    if (isset($_GET['error'])) {
+        echo "<p style='color:red; font-weight:bold;'>" . htmlspecialchars($_GET['error']) . "</p>";
+    }
+
     display_edit_stats();
     display_add_stats();
 
@@ -14,11 +24,8 @@
 
     function display_edit_stats() {
         echo "<h2>Edit Stats</h2>";
-        if (isset($_POST['edit_stat_id'], $_POST['edit_stat_field'], $_POST['edit_stat_value'])) {
-            global $db;
-            
-            handle_stat_edit();
-        }
+
+        // Edits are handled in edit_stat.php, so this page only displays the editable stat table
 
         $query = "
             SELECT
@@ -57,9 +64,10 @@
             'Position', 'Week', 'Date',
             'Home Team', 'Away Team', 'Touchdowns',
             'Passing Yards', 'Rushing Yards',
-            'Receiving Yards',' Tackles',
+            'Receiving Yards', 'Tackles',
             'Interceptions'
         ];
+
         echo "<tr>";
         foreach ($headers as $header) {
             echo "<th>$header</th>";
@@ -69,15 +77,19 @@
 
         while ($stat = $result->fetch_assoc()) {
             echo "<tr>";
+
             $fields = ['first_name', 'last_name', 'position', 'week', 'date', 'home_team', 'away_team'];
             foreach ($fields as $field) {
                 $val = sanitize_str($stat[$field]);
                 echo "<td>$val</td>";
             }
+
             $fields = ['touchdowns', 'passing_yards', 'rushing_yards', 'receiving_yards', 'tackles', 'interceptions'];
             $stat_id = intval($stat['stat_id']);
+
             foreach ($fields as $field) {
                 $val = intval($stat[$field]);
+
                 echo "<td>
                         <form method='post' action='edit_stat.php'>
                             <input type='hidden' name='edit_stat_id' value='$stat_id'>
@@ -90,31 +102,24 @@
             }
 
             echo "<td>
-                        <form method='post' action='delete_stat.php'>
-                            <input type='hidden' name='delete_stat_id' value='$stat_id'>
-                            <input type='submit' value='Delete'>
-                        </form>
-                    </td>";
+                    <form method='post' action='delete_stat.php'>
+                        <input type='hidden' name='delete_stat_id' value='$stat_id'>
+                        <input type='submit' value='Delete'>
+                    </form>
+                  </td>";
+
+            // Close the current table row
+            echo "</tr>";
         }
+
         echo "</table>";
     }
 
     function display_add_stats() {
         echo "<h2>Add Stats (WIP)</h2>";
 
-        // display_team();
-
-        // if (isset($_POST['manage_player_stats_team_id'])) {
-        //     display_season();
-        // }
-
-        // if (isset($_POST['manage_player_stats_season_id'])) {
-        //     display_game();
-        // }
-
-        // if (isset($_POST['manage_player_stats_game_id'])) {
-        //     display_player();
-        // }
+        // Add Stats feature is currently under development.
+        // The helper functions below are kept here for future implementation.
 
         function display_team() {
             $query = "
@@ -122,6 +127,7 @@
                 FROM Team
                 ORDER BY name ASC
             ";
+
             global $db;
             $result = query_with_perms($db, $query);
 
@@ -131,6 +137,7 @@
                     <option value="">Select Team</option>';
 
             $selected_team = isset($_POST['manage_player_stats_team_id']) ? intval($_POST['manage_player_stats_team_id']) : 0;
+
             while ($row = $result->fetch_assoc()) {
                 $team_id = intval($row['team_id']);
                 $name = sanitize_str($row['name']);
@@ -146,7 +153,7 @@
         function display_season() {
             $team_id = intval($_POST['manage_player_stats_team_id']);
 
-            // only shows seasons that the team played in
+            // Only shows seasons that the selected team played in
             $query = "
                 SELECT DISTINCT s.season_id, s.year
                 FROM Season s
@@ -155,8 +162,10 @@
                 WHERE g.home_team_id = ? OR g.away_team_id = ?
                 ORDER BY s.year ASC
             ";
+
             global $db;
             $stmt = prepare_with_perms($db, $query);
+
             if (!$stmt->bind_param('ii', $team_id, $team_id) || !$stmt->execute()) {
                 display_error_exit("failed to get seasons for the team");
             }
@@ -169,6 +178,7 @@
 
             $selected_season = isset($_POST['manage_player_stats_season_id']) ? intval($_POST['manage_player_stats_season_id']) : 0;
             $result = $stmt->get_result();
+
             while ($row = $result->fetch_assoc()) {
                 $season_id = intval($row['season_id']);
                 $year = sanitize_str($row['year']);
@@ -203,6 +213,7 @@
 
             global $db;
             $stmt = prepare_with_perms($db, $query);
+
             if (!$stmt->bind_param('iii', $season_id, $team_id, $team_id) || !$stmt->execute()) {
                 display_error_exit("failed to get games for the season");
             }
@@ -217,6 +228,7 @@
                     <option value="">Select Game</option>';
 
             $selected_game = isset($_POST['manage_player_stats_game_id']) ? intval($_POST['manage_player_stats_game_id']) : 0;
+
             while ($game = $result->fetch_assoc()) {
                 $game_id = intval($game['game_id']);
                 $home_team_name = sanitize_str($game['home_team_name']);
@@ -250,6 +262,7 @@
 
             global $db;
             $stmt = prepare_with_perms($db, $query);
+
             if (!$stmt->bind_param('ii', $game_id, $team_id) || !$stmt->execute()) {
                 display_error_exit("failed to fetch players for the game");
             }
@@ -265,6 +278,7 @@
                     <option value="">Select Player</option>';
 
             $selected_player = isset($_POST['manage_player_stats_player_id']) ? intval($_POST['manage_player_stats_player_id']) : 0;
+
             while ($player = $result->fetch_assoc()) {
                 $player_id = intval($player['player_id']);
                 $full_name = sanitize_str($player['first_name'] . ' ' . $player['last_name']);
@@ -277,5 +291,4 @@
                     </form>';
         }
     }
-    
 ?>

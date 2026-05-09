@@ -23,12 +23,15 @@
   }
   $stmt->close();
 
-  // Weird case: if the user changes their own role, log them out to reset the session
-  if ($username == $_SESSION['UserName']) {
-    header('Location: logout.php');
-    exit;
-  }
+  $stmt->close();
 
-  header('Location: manage_user_page.php');
-  exit;
+// If the user changes their own role, log them out to reset the session/database connection
+	if ($username == $_SESSION['UserName']) {
+	  header('Location: logout.php?success=Your role was changed. Please log in again.');
+	  exit;
+	}
+
+	header('Location: manage_user_page.php?success=User role updated successfully');
+exit;
 ?>
+

@@ -41,6 +41,6 @@ if (!$stmt || !$stmt->bind_param("ii", $player_id, $team_id) || !$stmt->execute(
 }
 $stmt->close();
 
-header("Location: manage_player_team_page.php");
+header("Location: manage_player_team_page.php?success=Player added to team successfully");
 exit;
 ?>
