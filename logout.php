@@ -21,8 +21,13 @@ if (ini_get("session.use_cookies")) {
 
 // Destroy the session
 session_destroy();
+// Preserve optional success message
+$message = isset($_GET['success'])
+    ? urlencode($_GET['success'])
+    : urlencode('Logged out successfully');
 
 // Redirect to login page
-header("Location: login_page.php");
+header("Location: login_page.php?success=" . $message);
+
 exit;
 ?>

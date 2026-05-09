@@ -14,21 +14,19 @@
   $password = sanitize_str($_POST['register_password']);
   $confirm_password = sanitize_str($_POST['register_confirm_password']);
 
-  try {
-    register($username, $email, $password, $confirm_password);
-    // Registration successful -- prompt user to login
-    do_html_header('Registration Successful');
-    echo 'Your registration was successful!';
-    echo "<br><a href='login_page.php'>Login</a>";
-    do_html_footer();
-  }
-  catch (Exception $e) {
-    do_html_header('Error');
-    echo $e->getMessage();
-    echo "<br><a href='register_user_page.php'>Register</a>";
-    do_html_footer();
-    exit;
-  }
+   try {
+	 register($username, $email, $password, $confirm_password);
+	 header('Location: login_page.php?success=Registration successful. Please log in.');
+	  exit;
+	}
+	
+   catch (Exception $e) {
+	  do_html_header('Error');
+	  echo $e->getMessage();
+	  echo "<br><a href='register_user_page.php'>Register</a>";
+	  do_html_footer();
+	  exit;
+	}
 
   function register($username, $email, $password, $confirm_password) {
     // Check that the email is valid
@@ -49,10 +47,19 @@
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     global $db;
+    /*
+    all self-registered users become Fans
+    nobody self-registers as Manager
+    role always exists
+    avoids broken accounts
+    */
     $query = "
-      INSERT INTO UserAccount (username, password_hash, email)
-      VALUES (?, ?, ?)
-    ";
+  	INSERT INTO UserAccount (username, password_hash, email, role_id)
+  	SELECT ?, ?, ?, role_id
+  	FROM Role
+  	WHERE name = 'Fan'
+	";
+	
     $stmt = prepare_with_perms($db, $query);
     if (!$stmt->bind_param("sss", $username, $hashed_password, $email) || !$stmt->execute()) {
       // duplicate entry

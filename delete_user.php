@@ -22,12 +22,12 @@
   }
   $stmt->close();
 
-  // Weird case: if the user deletes themselves, log them out to reset the session
-  if ($username == $_SESSION['UserName']) {
-    header('Location: logout.php');
-    exit;
-  }
-
-  header('Location: manage_user_page.php');
+// If the user deletes themselves, log them out to reset the session
+if ($username == $_SESSION['UserName']) {
+  header('Location: logout.php?success=Your account was deleted.');
   exit;
+}
+
+header('Location: manage_user_page.php?success=User deleted successfully');
+exit;
 ?>

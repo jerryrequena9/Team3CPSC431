@@ -39,8 +39,7 @@ function check_valid_user() {
     exit;
   }
 
-  echo "Logged in as <b>" . sanitize_str($_SESSION['UserName']) . "</b> ";
-  echo "Role: <b>" . sanitize_str($_SESSION['UserRole']) . "</b><br><br>";
+  echo "Logged in as <b>" . sanitize_str($_SESSION['UserName']) . "</b><br><br>";
 }
 
 // Generic error page for permission errors

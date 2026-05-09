@@ -40,21 +40,29 @@ function do_html_footer() {
 }
 
 function display_user_nav() {
-?>
-  <a href='home_page.php'>Home</a>
-  <a href='logout.php'>Logout</a>
-  <a href='change_password_page.php'>Change Password</a>
-  <a href='manage_user_page.php'>Manage Users</a>
-  <a href='manage_player_stats_page.php'>Manage Player Stats</a>
-  <a href='manage_player_team_page.php'>Manage Player Teams</a>
-  <a href='manage_player_page.php'>Manage Players (WIP)</a>
-  <a href='manage_coach_page.php'>Manage Coaches (WIP)</a>
-  <a href='manage_team_page.php'>Manage Teams</a>
-  <a href='manage_stadium_page.php'>Manage Stadiums (WIP)</a>
-  <a href='manage_season_page.php'>Manage Seasons (WIP)</a>
-  <a href='manage_game_page.php'>Manage Games (WIP)</a>
-  <hr>
-<?php
+
+  echo "<a href='home_page.php'>Home</a>";
+  echo "<a href='logout.php'>Logout</a>";
+  echo "<a href='change_password_page.php'>Change Password</a>";
+
+  // Manager-only features
+  if ($_SESSION['UserRole'] === 'Manager') {
+    echo "<a href='manage_user_page.php'>Manage Users</a>";
+    echo "<a href='manage_team_page.php'>Manage Teams</a>";
+    echo "<a href='manage_stadium_page.php'>Manage Stadiums (WIP)</a>";
+    echo "<a href='manage_season_page.php'>Manage Seasons (WIP)</a>";
+    echo "<a href='manage_game_page.php'>Manage Games (WIP)</a>";
+  }
+
+  // Coach + Manager features
+  if ($_SESSION['UserRole'] === 'Coach' || $_SESSION['UserRole'] === 'Manager') {
+    echo "<a href='manage_player_stats_page.php'>Manage Player Stats</a>";
+    echo "<a href='manage_player_team_page.php'>Manage Player Teams</a>";
+    echo "<a href='manage_player_page.php'>Manage Players (WIP)</a>";
+    echo "<a href='manage_coach_page.php'>Manage Coaches (WIP)</a>";
+  }
+
+  echo "<hr>";
 }
 
 function display_error_exit($err) {

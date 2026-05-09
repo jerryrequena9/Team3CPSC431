@@ -3,9 +3,17 @@
   require_once('helpers.php');
   require_once('html_components.php');
 
-  do_html_header('Manage Users'); 
-  check_valid_user();
-  display_user_nav();
+ do_html_header('Manage Users'); 
+check_valid_user();
+display_user_nav();
+
+if (isset($_GET['success'])) {
+  echo "<p style='color:green; font-weight:bold;'>" . htmlspecialchars($_GET['success']) . "</p>";
+}
+
+if (isset($_GET['error'])) {
+  echo "<p style='color:red; font-weight:bold;'>" . htmlspecialchars($_GET['error']) . "</p>";
+}
 
   display_manage_user();
   display_add_user();
@@ -91,8 +99,16 @@
 
         <label>Confirm Password:</label><br>
         <input type="password" name="manage_user_create_user_repeat_password"><br><br>
+        <label>Role:</label><br>
+   	<select name="manage_user_create_user_role" required>
+  	<option value="">-- Select Role --</option>
+  	<option value="Fan">Fan</option>
+  	<option value="Player">Player</option>
+  	<option value="Coach">Coach</option>
+  	<option value="Manager">Manager</option>
+	</select><br><br>
 
-        <input type="submit" value="Add User"><br><br>
+	<input type="submit" value="Add User"><br><br>
     </form>
     ';
   }

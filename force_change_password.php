@@ -10,16 +10,17 @@
 
   $username = sanitize_str($_POST['manage_user_change_password_username']);
   $password = sanitize_str($_POST['manage_user_change_new_password']);
-  try {
+// because the browser leaves the page immediately and loads manage_user_page.php
+// The navigation/footer will now come from manage_user_page.php
+ try {
     change_password($username, $password);
-    do_html_header('Success');
-    display_user_nav();
-    echo 'Success: password was changed';
-    do_html_footer();
+
+    header('Location: manage_user_page.php?success=Password updated successfully');
     exit;
-  } catch (Exception $e) {
+
+} catch (Exception $e) {
     display_error_exit($e->getMessage());
-  }
+}
 
 function change_password($username, $new_password) {
     global $db;
