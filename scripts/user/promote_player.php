@@ -7,9 +7,9 @@
     }
 
     $user_id = intval($_POST['user_id']);
-    $first_name = sanitize_str($_POST['first_name']);
-    $last_name = sanitize_str($_POST['last_name']);
-    $position = sanitize_str($_POST['position']);
+    $first_name = trim($_POST['first_name']);
+    $last_name = trim($_POST['last_name']);
+    $position = trim($_POST['position']);
 
     global $db;
 

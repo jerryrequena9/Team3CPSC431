@@ -3,7 +3,6 @@
     require_once(__DIR__ . "/html_components.php");
     require_once(__DIR__ . "/../scripts/helpers.php");
 
-
     do_html_header("Manage Teams");
     check_valid_user();
     display_user_nav();
@@ -321,7 +320,7 @@
         $result = query_with_perms($db, $query);
 
         if (!$result) {
-            echo "Error loading player team data: " . sanitize_str($db->error);
+            echo "Error loading player team data";
             return;
         }
 

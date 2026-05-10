@@ -13,7 +13,7 @@
     $home_team_id = intval($_POST['home_team_id']);
     $away_team_id = intval($_POST['away_team_id']);
     $week = intval($_POST['week']);
-    $date = $_POST['date'];
+    $date = trim($_POST['date']);
     $home_score = intval($_POST['home_score']);
     $away_score = intval($_POST['away_score']);
 
