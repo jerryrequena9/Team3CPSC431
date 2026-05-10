@@ -25,16 +25,14 @@
 
     try {
         $stmt->execute();
+        if ($stmt->affected_rows === 0) {
+          error("Champion not updated", "../../pages/season_page.php");
+        }
     } catch (mysqli_sql_exception $e) {
-        $stmt->close();
         error("Champion not set", "../../pages/season_page.php");
+    } finally {
+      $stmt->close();
     }
 
-    if ($stmt->affected_rows === 0) {
-        $stmt->close();
-        error("Champion not updated", "../../pages/season_page.php");
-    }
-
-    $stmt->close();
     success("Champion updated", "../../pages/season_page.php");
 ?>
