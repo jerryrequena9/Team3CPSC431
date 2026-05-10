@@ -18,7 +18,7 @@
     $away_score = intval($_POST['away_score']);
 
     $query = "
-        INSERT INTO Game 
+        INSERT INTO Game
             (season_id, home_team_id, away_team_id, date, week, home_score, away_score, stadium_id)
         SELECT ?, ?, ?, ?, ?, ?, ?, t.stadium_id
         FROM Team t
@@ -40,9 +40,6 @@
         } else if ($e->getCode() == 1062) {
             error("A team already plays on that week", "../../pages/game_page.php");
         }
-        echo $e->getCode();
-        echo $e->getMessage();
-        exit;
         error("Game not added", "../../pages/game_page.php");
     } finally {
         $stmt->close();
