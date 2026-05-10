@@ -15,17 +15,18 @@ CREATE TABLE Role (
 
 CREATE TABLE UserAccount (
     user_id       INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    role_id       INT UNSIGNED DEFAULT 1,
+    role_id       INT UNSIGNED NOT NULL DEFAULT 1,
     username      VARCHAR(50)  NOT NULL UNIQUE,
     password_hash CHAR(60)     NOT NULL,
-    email         VARCHAR(254) NOT NULL,
+    email         VARCHAR(254) NOT NULL UNIQUE,
     last_login    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (role_id)
         REFERENCES Role(role_id)
         ON DELETE RESTRICT,
 
-    CHECK (CHAR_LENGTH(username) >= 4)
+    CONSTRAINT valid_email    CHECK (email REGEXP '^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'),
+    CONSTRAINT valid_username CHECK (CHAR_LENGTH(username) BETWEEN 4 AND 50)
 );
 
 -- =====================================================
@@ -34,7 +35,7 @@ CREATE TABLE UserAccount (
 
 CREATE TABLE Player (
     player_id  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    user_id    INT UNSIGNED,
+    user_id    INT UNSIGNED NOT NULL UNIQUE,
     first_name VARCHAR(100) NOT NULL,
     last_name  VARCHAR(100) NOT NULL,
     position   VARCHAR(5)   NOT NULL,
@@ -48,25 +49,29 @@ CREATE TABLE Player (
 CREATE TABLE Stadium (
     stadium_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name       VARCHAR(100) NOT NULL,
-    city       VARCHAR(100) NOT NULL
+    city       VARCHAR(100) NOT NULL,
+
+    UNIQUE (name, city)
 );
 
 CREATE TABLE Team (
     team_id    INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    stadium_id INT UNSIGNED,
+    stadium_id INT UNSIGNED NOT NULL UNIQUE,
     name       VARCHAR(100) NOT NULL,
     city       VARCHAR(100) NOT NULL,
     conference VARCHAR(3)   NOT NULL,   -- NFC / AFC
     division   VARCHAR(5)   NOT NULL,   -- North, South, East, West
 
+    UNIQUE (name, city),
+
     FOREIGN KEY (stadium_id)
         REFERENCES Stadium(stadium_id)
-        ON DELETE SET NULL
+        ON DELETE RESTRICT
 );
 
 CREATE TABLE Coach (
     coach_id   INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    user_id    INT UNSIGNED,
+    user_id    INT UNSIGNED NOT NULL UNIQUE,
     team_id    INT UNSIGNED,
     first_name VARCHAR(100) NOT NULL,
     last_name  VARCHAR(100) NOT NULL,
@@ -86,9 +91,9 @@ CREATE TABLE Coach (
 
 CREATE TABLE Player_Team (
     player_team_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    player_id      INT UNSIGNED,
-    team_id        INT UNSIGNED,
-    start_date     DATE NOT NULL,
+    player_id      INT UNSIGNED NOT NULL,
+    team_id        INT UNSIGNED NOT NULL,
+    start_date     DATE         NOT NULL,
     end_date       DATE,
 
     FOREIGN KEY (player_id)
@@ -99,6 +104,8 @@ CREATE TABLE Player_Team (
         REFERENCES Team(team_id)
         ON DELETE CASCADE,
 
+    -- Ensure that one player is only on one team at a time
+    UNIQUE KEY uniq_active_team (player_id, end_date),
     CHECK (end_date IS NULL OR end_date >= start_date)
 );
 
@@ -108,22 +115,22 @@ CREATE TABLE Player_Team (
 
 CREATE TABLE Season (
     season_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    champion  INT UNSIGNED,
-    year      YEAR,
+    champion  INT UNSIGNED UNIQUE,
+    year      YEAR         NOT NULL,
 
     FOREIGN KEY (champion)
         REFERENCES Team(team_id)
-        ON DELETE CASCADE,
+        ON DELETE SET NULL,
 
     UNIQUE (year)
 );
 
 CREATE TABLE Team_Season (
     team_season_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    team_id        INT UNSIGNED,
-    season_id      INT UNSIGNED,
-    wins           INT UNSIGNED,
-    losses         INT UNSIGNED,
+    team_id        INT UNSIGNED NOT NULL,
+    season_id      INT UNSIGNED NOT NULL,
+    wins           INT UNSIGNED DEFAULT 0,
+    losses         INT UNSIGNED DEFAULT 0,
 
     FOREIGN KEY (team_id)
         REFERENCES Team(team_id)
@@ -141,9 +148,9 @@ CREATE TABLE Game (
     season_id    INT UNSIGNED NOT NULL,
     home_team_id INT UNSIGNED NOT NULL,
     away_team_id INT UNSIGNED NOT NULL,
-    stadium_id   INT UNSIGNED,
-    week         INT UNSIGNED,
-    date         DATE NOT NULL,
+    stadium_id   INT UNSIGNED NOT NULL,
+    week         INT UNSIGNED NOT NULL,
+    date         DATE         NOT NULL,
     home_score   INT UNSIGNED NOT NULL,
     away_score   INT UNSIGNED NOT NULL,
 
@@ -161,9 +168,13 @@ CREATE TABLE Game (
 
     FOREIGN KEY (stadium_id)
         REFERENCES Stadium(stadium_id)
-        ON DELETE SET NULL,
+        ON DELETE RESTRICT,
 
-    CHECK (home_team_id != away_team_id)
+    UNIQUE (season_id, week, home_team_id),
+    UNIQUE (season_id, week, away_team_id),
+
+    CONSTRAINT valid_date CHECK (week BETWEEN 1 AND 16),
+    CONSTRAINT home_away_different CHECK (home_team_id != away_team_id)
 );
 
 -- =====================================================
@@ -191,7 +202,6 @@ CREATE TABLE Stat (
 
     UNIQUE (player_id, game_id)
 );
-
 -- =====================================================
 -- USERS
 -- =====================================================

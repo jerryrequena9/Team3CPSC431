@@ -1,0 +1,20 @@
+<?php
+  require_once(__DIR__ . '/../scripts/StartSession.php');
+  require_once(__DIR__ . '/html_components.php');
+
+  do_html_header('Forgot Password');
+
+  echo '
+    <form method="post" action="../scripts/user/forgot_password.php">
+        <label>Username:</label><br>
+        <input type="text" name="forgot_username" required><br><br>
+
+        <input type="submit" name="forgot_password" value="Submit"><br><br>
+        <a href="login_page.php">Login</a>
+        <br>
+        <a href="register_user_page.php">Register</a>
+    </form>
+  ';
+
+  do_html_footer();
+?>

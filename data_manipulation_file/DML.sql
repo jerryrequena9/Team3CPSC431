@@ -35,40 +35,78 @@ INSERT INTO Season (champion, year) VALUES
 (4, 2024),
 (1, 2025);
 
+INSERT INTO Team_Season (team_id, season_id) VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(1, 2),
+(2, 2),
+(3, 2),
+(4, 2),
+(5, 2),
+(6, 2),
+(7, 2),
+(8, 2);
+
 -- Games
 INSERT INTO Game (home_team_id, away_team_id, stadium_id, season_id, week, date, home_score, away_score) VALUES
 (1, 2, 1, 2, 1, '2025-09-12', 24, 17),
-(2, 3, 2, 2, 2, '2025-09-13', 28, 24),
-(3, 4, 3, 2, 3, '2025-09-14', 31, 28),
+(2, 3, 2, 2, 1, '2025-09-13', 28, 24),
+(3, 4, 3, 2, 1, '2025-09-14', 31, 28),
 (5, 6, 5, 2, 1, '2025-09-12', 35, 20),
 (7, 8, 7, 2, 1, '2025-09-12', 14, 21),
 (6, 1, 6, 2, 2, '2025-09-19', 27, 24),
 (4, 5, 4, 2, 2, '2025-09-19', 17, 30),
-(8, 2, 8, 2, 3, '2025-09-20', 10, 33),
+(8, 2, 8, 2, 2, '2025-09-20', 10, 33),
 
 (1, 2, 1, 1, 1, '2024-10-12',  1, 12),
-(2, 3, 2, 1, 2, '2024-10-13',  0, 30),
-(3, 4, 3, 1, 3, '2024-10-14',  9, 21),
+(2, 3, 2, 1, 1, '2024-10-13',  0, 30),
+(3, 4, 3, 1, 1, '2024-10-14',  9, 21),
 (5, 6, 5, 1, 1, '2024-10-12', 28, 14),
 (7, 8, 7, 1, 1, '2024-10-12', 20, 17),
 (6, 3, 6, 1, 2, '2024-10-19', 24, 10),
-(4, 2, 4, 1, 3, '2024-10-20', 35,  7),
-(8, 5, 8, 1, 3, '2024-10-20', 13, 40);
+(4, 2, 4, 1, 2, '2024-10-20', 35,  7),
+(8, 5, 8, 1, 2, '2024-10-20', 13, 40);
+
+-- User Accounts
+INSERT INTO UserAccount (username, password_hash, email, role_id) VALUES
+('manager1',         '$2y$10$J8QZ4j1Q8DAf.pM28SXzUOS1YBa5p29ysl6JZdYf9rWXUsTXinGHa', 'manager@football.com',  4),
+('coach1',           '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm', 'coach@football.com',    3),
+('player1',          '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'player@football.com',   2),
+('fan1',             '$2y$10$Ow2wuFWyCoUtaCXNuxIaT.D.nYXnF88WO8T8.s0E7440N921NLmEe', 'fan@football.com',      1),
+('Matthew_Stafford', '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'matthew1@football.com', 2),
+('Aaron_Donald',     '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'aaron1@football.com',   2),
+('Tom_Brady',        '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'tom1@football.com',     2),
+('Davante_Adams',    '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'davante1@football.com', 2),
+('Patrick_Mahomes',  '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'patrick1@football.com', 2),
+('Travis_Kelce',     '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'travis1@football.com',  2),
+('Brock_Purdy',      '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'brock1@football.com',   2),
+('Deebo_Samuel',     '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'deebo1@football.com',   2),
+('Saquon_Barkley',   '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'saquon1@football.com',  2),
+('Justin_Fields',    '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'justin1@football.com',  2),
+('Cooper_Kupp',      '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'cooper1@football.com',  2),
+('Micah_Parsons',    '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'micah1@football.com',   2),
+('Coach_Last',       '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm', 'coach1@football.com',   3);
 
 -- Players
-INSERT INTO Player (first_name, last_name, position, status) VALUES
-('Matthew', 'Stafford',  'QB', 'Active'),
-('Aaron',   'Donald',    'DE', 'Active'),
-('Tom',     'Brady',     'QB', 'Inactive'),
-('Davante', 'Adams',     'WR', 'Active'),
-('Patrick', 'Mahomes',   'QB', 'Active'),
-('Travis',  'Kelce',     'TE', 'Active'),
-('Brock',   'Purdy',     'QB', 'Active'),
-('Deebo',   'Samuel',    'WR', 'Active'),
-('Saquon',  'Barkley',   'RB', 'Active'),
-('Justin',  'Fields',    'QB', 'Active'),
-('Cooper',  'Kupp',      'WR', 'Active'),
-('Micah',   'Parsons',   'LB', 'Active');
+INSERT INTO Player (user_id, first_name, last_name, position, status) VALUES
+(5,  'Matthew', 'Stafford',  'QB', 'Active'),
+(6,  'Aaron',   'Donald',    'DE', 'Active'),
+(7,  'Tom',     'Brady',     'QB', 'Inactive'),
+(8,  'Davante', 'Adams',     'WR', 'Active'),
+(9,  'Patrick', 'Mahomes',   'QB', 'Active'),
+(10, 'Travis',  'Kelce',     'TE', 'Active'),
+(11, 'Brock',   'Purdy',     'QB', 'Active'),
+(12, 'Deebo',   'Samuel',    'WR', 'Active'),
+(13, 'Saquon',  'Barkley',   'RB', 'Active'),
+(14, 'Justin',  'Fields',    'QB', 'Active'),
+(15, 'Cooper',  'Kupp',      'WR', 'Active'),
+(16, 'Micah',   'Parsons',   'LB', 'Active');
 
 -- Player_Team
 INSERT INTO Player_Team (player_id, team_id, start_date) VALUES
@@ -144,13 +182,9 @@ INSERT INTO Stat (player_id, game_id, touchdowns, passing_yards, rushing_yards, 
 (5,  16, 4, 400,  30,   0, 0, 0),
 (6,  16, 2,   0,   0, 110, 0, 0);
 
--- User Accounts
-INSERT INTO UserAccount (username, password_hash, email, role_id) VALUES
-('manager1', '$2y$10$J8QZ4j1Q8DAf.pM28SXzUOS1YBa5p29ysl6JZdYf9rWXUsTXinGHa', 'manager@football.com', 4),
-('coach1', '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm', 'coach@football.com', 3),
-('player1', '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'player@football.com', 2),
-('fan1', '$2y$10$Ow2wuFWyCoUtaCXNuxIaT.D.nYXnF88WO8T8.s0E7440N921NLmEe', 'fan@football.com', 1);
+
+
 
 -- Coaches
 INSERT INTO Coach (user_id, team_id, first_name, last_name) VALUES
-(2, 1, "Los Angeles Rams", "Coach");
+(2, 1, "Joe", "Coach");
