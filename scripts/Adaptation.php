@@ -27,12 +27,11 @@
     Database credentials used only to authenticate the user
     against the Users table before the role is known.
   */
-  define('AUTH_ROLE', 'Guest');
+  define('AUTH_ROLE', 'Manager');
 
   // Lookup table from role to database password
   $DBPasswords = ['Manager'  => 'manager_pass',
                   'Coach'  => 'coach_pass',
                   'Player' => 'player_pass',
-                  'Fan'    => 'fan_pass',
-                  'Guest'    => 'guest_pass'];
+                  'Fan'    => 'fan_pass'];
 ?>

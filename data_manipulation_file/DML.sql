@@ -12,42 +12,179 @@ INSERT INTO Stadium (name, city) VALUES
 ('SoFi Stadium', 'Los Angeles'),
 ('Gillette Stadium', 'Foxborough'),
 ('AT&T Stadium', 'Dallas'),
-('Lambeau Field', 'Green Bay');
+('Lambeau Field', 'Green Bay'),
+('Arrowhead Stadium', 'Kansas City'),
+('Levis Stadium', 'Santa Clara'),
+('MetLife Stadium', 'East Rutherford'),
+('Soldier Field', 'Chicago');
 
 -- Teams
 INSERT INTO Team (name, stadium_id, conference, division, city) VALUES
 ('Los Angeles Rams', 1, 'NFC', 'West', 'Los Angeles'),
 ('New England Patriots', 2, 'AFC', 'East', 'Foxborough'),
 ('Dallas Cowboys', 3, 'NFC', 'East', 'Dallas'),
-('Green Bay Packers', 4, 'NFC', 'North', 'Green Bay');
+('Green Bay Packers', 4, 'NFC', 'North', 'Green Bay'),
+('Kansas City Chiefs', 5, 'AFC', 'West', 'Kansas City'),
+('San Francisco 49ers', 6, 'NFC', 'West', 'Santa Clara'),
+('New York Giants', 7, 'NFC', 'East', 'East Rutherford'),
+('Chicago Bears', 8, 'NFC', 'North', 'Chicago');
 
--- Season (2025 NFL Season)
+
+-- Seasons
 INSERT INTO Season (champion, year) VALUES
-(NULL, 2025);
+(4, 2024),
+(1, 2025);
+
+INSERT INTO Team_Season (team_id, season_id) VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(1, 2),
+(2, 2),
+(3, 2),
+(4, 2),
+(5, 2),
+(6, 2),
+(7, 2),
+(8, 2);
 
 -- Games
 INSERT INTO Game (home_team_id, away_team_id, stadium_id, season_id, week, date, home_score, away_score) VALUES
-(1, 2, 1, 1, 1, '2025-09-12', 24, 17),
-(2, 3, 2, 1, 2, '2025-09-13', 28, 24),
-(3, 4, 3, 1, 3, '2025-09-14', 31, 28);
+(1, 2, 1, 2, 1, '2025-09-12', 24, 17),
+(2, 3, 2, 2, 1, '2025-09-13', 28, 24),
+(3, 4, 3, 2, 1, '2025-09-14', 31, 28),
+(5, 6, 5, 2, 1, '2025-09-12', 35, 20),
+(7, 8, 7, 2, 1, '2025-09-12', 14, 21),
+(6, 1, 6, 2, 2, '2025-09-19', 27, 24),
+(4, 5, 4, 2, 2, '2025-09-19', 17, 30),
+(8, 2, 8, 2, 2, '2025-09-20', 10, 33),
 
--- Players
-INSERT INTO Player (first_name, last_name, position, status) VALUES
-('Matthew', 'Stafford', 'QB', 'Active'),
-('Aaron', 'Donald', 'DE', 'Active'),
-('Tom', 'Brady', 'QB', 'Inactive'),
-('Davante', 'Adams', 'WR', 'Active');
-
--- Player Stats
-INSERT INTO Stat (player_id, game_id, touchdowns, passing_yards, rushing_yards, receiving_yards, tackles, interceptions) VALUES
-(1, 1, 3, 280, 50, 25, 0, 0),
-(2, 1, 1, 0, 10, 15, 5, 0),
-(3, 2, 2, 230, 20, 40, 0, 1),
-(4, 3, 1, 200, 25, 45, 2, 0);
+(1, 2, 1, 1, 1, '2024-10-12',  1, 12),
+(2, 3, 2, 1, 1, '2024-10-13',  0, 30),
+(3, 4, 3, 1, 1, '2024-10-14',  9, 21),
+(5, 6, 5, 1, 1, '2024-10-12', 28, 14),
+(7, 8, 7, 1, 1, '2024-10-12', 20, 17),
+(6, 3, 6, 1, 2, '2024-10-19', 24, 10),
+(4, 2, 4, 1, 2, '2024-10-20', 35,  7),
+(8, 5, 8, 1, 2, '2024-10-20', 13, 40);
 
 -- User Accounts
-INSERT INTO UserAccount (username, password_hash, email, role_id, is_active) VALUES
-('manager1', '$2y$10$ZtONA431NVTqTVj.PqwBKOomuc39KzejQ0xVqYwvzNcu5BHt/ndT.', 'manager@football.com', 4, TRUE),
-('coach1', '$2y$10$qYU6hWcXFpfypBY44MaxXuwudN2X4hm5x9vrT6krjhTzdIenODPHS', 'coach@football.com', 3, TRUE),
-('player1', '$2y$10$znkhq0bbHC0a8Jw5XtPH2O3LFzSr36JkYRqNoF37SbO7MX9DAZe9.', 'player@football.com', 2, TRUE),
-('fan1', '$2y$10$U8WujKSZDiDUlW4fBBZbcOabc123examplehash', 'fan@football.com', 1, TRUE);
+INSERT INTO UserAccount (username, password_hash, email, role_id) VALUES
+('manager1',         '$2y$10$J8QZ4j1Q8DAf.pM28SXzUOS1YBa5p29ysl6JZdYf9rWXUsTXinGHa', 'manager@football.com',  4),
+('coach1',           '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm', 'coach@football.com',    3),
+('player1',          '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'player@football.com',   2),
+('fan1',             '$2y$10$Ow2wuFWyCoUtaCXNuxIaT.D.nYXnF88WO8T8.s0E7440N921NLmEe', 'fan@football.com',      1),
+('Matthew_Stafford', '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'matthew1@football.com', 2),
+('Aaron_Donald',     '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'aaron1@football.com',   2),
+('Tom_Brady',        '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'tom1@football.com',     2),
+('Davante_Adams',    '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'davante1@football.com', 2),
+('Patrick_Mahomes',  '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'patrick1@football.com', 2),
+('Travis_Kelce',     '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'travis1@football.com',  2),
+('Brock_Purdy',      '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'brock1@football.com',   2),
+('Deebo_Samuel',     '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'deebo1@football.com',   2),
+('Saquon_Barkley',   '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'saquon1@football.com',  2),
+('Justin_Fields',    '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'justin1@football.com',  2),
+('Cooper_Kupp',      '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'cooper1@football.com',  2),
+('Micah_Parsons',    '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'micah1@football.com',   2),
+('Coach_Last',       '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm', 'coach1@football.com',   3);
+
+-- Players
+INSERT INTO Player (user_id, first_name, last_name, position, status) VALUES
+(5,  'Matthew', 'Stafford',  'QB', 'Active'),
+(6,  'Aaron',   'Donald',    'DE', 'Active'),
+(7,  'Tom',     'Brady',     'QB', 'Inactive'),
+(8,  'Davante', 'Adams',     'WR', 'Active'),
+(9,  'Patrick', 'Mahomes',   'QB', 'Active'),
+(10, 'Travis',  'Kelce',     'TE', 'Active'),
+(11, 'Brock',   'Purdy',     'QB', 'Active'),
+(12, 'Deebo',   'Samuel',    'WR', 'Active'),
+(13, 'Saquon',  'Barkley',   'RB', 'Active'),
+(14, 'Justin',  'Fields',    'QB', 'Active'),
+(15, 'Cooper',  'Kupp',      'WR', 'Active'),
+(16, 'Micah',   'Parsons',   'LB', 'Active');
+
+-- Player_Team
+INSERT INTO Player_Team (player_id, team_id, start_date) VALUES
+(1,  1, '2017-01-01'),
+(2,  1, '2014-01-01'),
+(3,  2, '2000-01-01'),
+(4,  4, '2018-01-01'),
+(5,  5, '2018-01-01'),
+(6,  5, '2013-01-01'),
+(7,  6, '2022-01-01'),
+(8,  6, '2019-01-01'),
+(9,  7, '2018-01-01'),
+(10, 8, '2021-01-01'),
+(11, 1, '2017-01-01'),
+(12, 3, '2021-01-01');
+
+-- Stats
+INSERT INTO Stat (player_id, game_id, touchdowns, passing_yards, rushing_yards, receiving_yards, tackles, interceptions) VALUES
+(1,  1, 3, 310,  22,   0, 0, 0),
+(2,  1, 0,   0,   0,   0, 7, 1), 
+(11, 1, 1,   0,   0,  95, 0, 0), 
+(3,  1, 1, 198,  10,   0, 0, 0),
+
+(3,  2, 2, 230,  20,   0, 0, 1),
+(12, 2, 0,   0,   0,   0, 9, 0),
+
+(12, 3, 0,   0,   0,   0, 6, 0),
+(4,  3, 2,   0,   5, 110, 0, 0),
+
+(5,  4, 4, 385,  35,   0, 0, 0),
+(6,  4, 2,   0,   0, 120, 0, 0),
+(7,  4, 1, 280,  18,   0, 0, 0),
+(8,  4, 1,   0,   0,  88, 0, 0),
+
+(9,  5, 1,   0, 112,   0, 0, 0),
+(10, 5, 1, 210,  45,   0, 0, 0),
+
+(7,  6, 2, 265,  20,   0, 0, 0),
+(8,  6, 1,   0,  10,  75, 0, 0),
+(1,  6, 2, 290,  15,   0, 0, 0),
+(11, 6, 1,   0,   0,  88, 0, 0),
+
+(4,  7, 1,   0,   0,  70, 0, 0),
+(5,  7, 3, 340,  28,   0, 0, 0),
+(6,  7, 1,   0,   0,  95, 0, 0),
+
+(10, 8, 0, 185,  30,   0, 0, 0),
+(3,  8, 3, 275,   5,   0, 0, 0),
+
+(1,  9, 0, 155,  10,   0, 0, 0),
+(3,  9, 1, 200,   8,   0, 0, 0),
+
+(3,  10, 0, 178,  12,   0, 0, 1), 
+(12, 10, 0,   0,   0,   0, 8, 0),
+
+(12, 11, 0,   0,   0,   0, 5, 1),
+(4,  11, 3,   0,   0, 130, 0, 0),
+
+(5,  12, 3, 350,  40,   0, 0, 0),
+(6,  12, 1,   0,   0, 100, 0, 0),
+(7,  12, 1, 240,  12,   0, 0, 0),
+
+(9,  13, 2,   0,  98,   0, 0, 0),
+(10, 13, 1, 195,  40,   0, 0, 0),
+
+(7,  14, 2, 255,  18,   0, 0, 0),
+(12, 14, 0,   0,   0,   0, 7, 1),
+
+(4,  15, 2,   0,   0, 115, 0, 0),
+(3,  15, 1, 210,   5,   0, 0, 0),
+
+(10, 16, 0, 170,  28,   0, 0, 0),
+(5,  16, 4, 400,  30,   0, 0, 0),
+(6,  16, 2,   0,   0, 110, 0, 0);
+
+
+
+
+-- Coaches
+INSERT INTO Coach (user_id, team_id, first_name, last_name) VALUES
+(2, 1, "Joe", "Coach");
