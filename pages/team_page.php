@@ -9,19 +9,16 @@
 
     display_add_team_form();
     display_teams_table();
-    display_team_roster();
     display_add_player_form();
     display_current_assignments();
+    display_team_roster();
 
     do_html_footer();
 
     function display_add_team_form() {
         global $db;
 
-        /*
-         * Stadium data is loaded from the database instead of hardcoded.
-         * This keeps the form in sync with the Stadium table.
-         */
+        // Get list of stadiums
         $query = "
             SELECT stadium_id, name, city
             FROM Stadium
@@ -59,6 +56,7 @@
             <select name='stadium_id'>
                 <option value=''>-- None --</option>";
 
+        // Display stadiums
         while ($s = $stadiums->fetch_assoc()) {
             echo "<option value='" . intval($s['stadium_id']) . "'>" .
                  sanitize_str($s['city'] . " - " . $s['name']) .
@@ -73,13 +71,21 @@
     function display_teams_table() {
         global $db;
 
+        // Get team information
         $query = "
-            SELECT t.team_id, t.name, t.city, t.conference, t.division, t.stadium_id
+            SELECT
+                t.team_id,
+                t.name,
+                t.city, 
+                t.conference,
+                t.division,
+                t.stadium_id
             FROM Team t
             ORDER BY t.city, t.name
         ";
         $teams = query_with_perms($db, $query);
 
+        // Get stadium information
         $query = "
             SELECT stadium_id, name, city
             FROM Stadium
@@ -105,11 +111,13 @@
 
             echo "<tr>";
 
+            // Display name and city of teams
             echo "<form method='post' action='../scripts/team/edit_team.php'>";
             echo "<input type='hidden' name='team_id' value='$team_id'>";
             echo "<td><input type='text' name='name' value='" . sanitize_str($row['name']) . "' required></td>";
             echo "<td><input type='text' name='city' value='" . sanitize_str($row['city']) . "' required></td>";
 
+            // Display conference
             echo "<td>
                     <select name='conference' required>
                         <option value='NFC'" . ($row['conference'] == 'NFC' ? ' selected' : '') . ">NFC</option>
@@ -117,6 +125,7 @@
                     </select>
                 </td>";
 
+            // Display division
             echo "<td>
                     <select name='division' required>
                         <option value='North'" . ($row['division'] == 'North' ? ' selected' : '') . ">North</option>
@@ -126,6 +135,7 @@
                     </select>
                 </td>";
 
+            // Display stadiums
             echo "<td>
                     <select name='stadium_id' required>";
                         foreach ($stadiums as $stadium) {
@@ -138,6 +148,7 @@
                 </td>";
 
             echo "<td>";
+                // Get the coaches of the current team
                 $query = "
                     SELECT first_name, last_name
                     FROM Coach
@@ -150,6 +161,7 @@
                     $stmt->execute();
                     $result = $stmt->get_result();
                     while ($coach = $result->fetch_assoc()) {
+                        // Display the name of the coach
                         echo sanitize_str($coach['first_name']) . " " . sanitize_str($coach['last_name']) . "<br>";
                     }
                 } catch (mysqli_sql_exception $e) {
@@ -192,6 +204,7 @@
             $team_name = sanitize_str($team['name']);
 
             echo "<h3>$team_name</h3>";
+            // Get each season the team played in
             $query = "
                 SELECT s.season_id, s.year
                 FROM Team_Season ts
@@ -209,12 +222,14 @@
             }
             $seasons_result = $stmt->get_result();
 
+            // Loop over each season
             while ($season = $seasons_result->fetch_assoc()) {
                 $season_id = intval($season['season_id']);
                 $season_year = sanitize_str($season['year']);
 
                 echo "<h4>Season: $season_year</h4>";
 
+                // Get all players on the team
                 $query = "
                     SELECT p.first_name, p.last_name, p.position, p.status
                     FROM Player_Team pt
@@ -239,6 +254,7 @@
                         <th>Status</th>
                     </tr>";
 
+                // Display each player's information
                 while ($player = $players_result->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td>" . sanitize_str($player['first_name']) . "</td>";
@@ -258,6 +274,7 @@
     function display_add_player_form() {
         global $db;
 
+        // Get every player's information
         $query = "
             SELECT player_id, first_name, last_name, position
             FROM Player
@@ -265,8 +282,9 @@
         ";
         $players = query_with_perms($db, $query);
 
+        // Get every team
         $query = "
-            SELECT team_id, name, city
+            SELECT team_id, name
             FROM Team
             ORDER BY city, name
         ";
@@ -278,6 +296,7 @@
         echo "<label>Select Player:</label><br>";
         echo "<select name='add_player_id' required>";
         echo "<option value=''>-- Select Player --</option>";
+        // Display a dropdown to select player
         while ($player = $players->fetch_assoc()) {
             echo "<option value='" . sanitize_str($player['player_id']) . "'>";
             echo sanitize_str($player['first_name'] . " " . $player['last_name'] . " (" . $player['position'] . ")");
@@ -288,9 +307,10 @@
         echo "<label>Select Team:</label><br>";
         echo "<select name='add_team_id' required>";
         echo "<option value=''>-- Select Team --</option>";
+        // Display a dropdown to select team
         while ($team = $teams->fetch_assoc()) {
             echo "<option value='" . sanitize_str($team['team_id']) . "'>";
-            echo sanitize_str($team['city'] . " " . $team['name']);
+            echo sanitize_str($team['name']);
             echo "</option>";
         }
         echo "</select><br><br>";
@@ -302,19 +322,25 @@
     function display_current_assignments() {
         global $db;
 
+        // For each team, get the information
+        // of all past and present players that
+        // ever played for the team
         $query = "
             SELECT
                 pt.player_team_id,
                 p.first_name,
                 p.last_name,
                 p.position,
+                p.player_id,
                 t.name AS team_name,
                 t.city AS team_city,
                 pt.start_date,
                 pt.end_date
             FROM Player_Team pt
-            JOIN Player p ON pt.player_id = p.player_id
-            JOIN Team t ON pt.team_id = t.team_id
+            JOIN Player p
+                ON pt.player_id = p.player_id
+            JOIN Team t
+                ON pt.team_id = t.team_id
             ORDER BY t.city, t.name, p.last_name
         ";
         $result = query_with_perms($db, $query);
@@ -335,6 +361,7 @@
                 <th>Action</th>
             </tr>";
 
+        // Display each player's information
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
             echo "<td>" . sanitize_str($row['first_name'] . " " . $row['last_name']) . "</td>";
@@ -345,7 +372,8 @@
             echo "<td>";
             if ($row['end_date'] === null) {
                 echo "<form method='post' action='../scripts/team/delete_player_team.php'>";
-                echo "<input type='hidden' name='remove_player_team_id' value='" . sanitize_str($row['player_team_id']) . "'>";
+                echo "<input type='hidden' name='player_team_id' value='" . sanitize_str($row['player_team_id']) . "'>";
+                echo "<input type='hidden' name='player_id' value='" . sanitize_str($row['player_id']) . "'>";
                 echo "<input type='submit' value='Remove from Team'>";
                 echo "</form>";
             } else {

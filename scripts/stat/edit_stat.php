@@ -23,39 +23,71 @@
         'interceptions'
     ];
 
-    $field = trim($_POST['edit_stat_field']);
-    $stat_id = intval($_POST['edit_stat_id']);
-    $value = intval($_POST['edit_stat_value']);
-    /*
-     * Authorization should be enforced by the database account permissions.
-     * Manager/Coach DB users should be the only accounts with UPDATE permission
-     * on Stat. Fan/Player should fail here even if they bypass the UI.
-     * Coaches should not be able to edit stats for players outside their team.
-     * This query restricts the update to stats connected to the coach's team.
-     *
-     */
+    $field = trim($_POST['stat_field']);
+    $stat_id = intval($_POST['stat_id']);
+    $value = intval($_POST['stat_value']);
+    $player_id = intval($_POST['player_id']);
+    $game_id = intval($_POST['game_id']);
+
     global $db;
 
-    /*
-    * Coach-scoped update:
-    * The JOIN prevents a Coach from editing a Stat row unless that stat
-    * belongs to a player on the Coach's own team.
-    */
+    // Get coach id if it exists
+    $query = "
+        SELECT coach_id
+        FROM Coach
+        WHERE user_id = ?
+    ";
+    $stmt = prepare_with_perms($db, $query);
+    $stmt->bind_param("i", $_SESSION['UserID']);
+    try {
+        $stmt->execute();
+        $stmt->bind_result($user_coach_id);
+
+        $is_coach = $stmt->fetch();
+        $stmt->close();
+
+        if ($is_coach) {
+            // If the user is a coach, check that they are editing stats
+            // only of players they coach
+            $query = "
+                SELECT 1
+                FROM Player_Team pt
+                JOIN Coach c
+                    ON c.team_id = pt.team_id
+                JOIN Game g
+                    ON g.home_team_id = pt.team_id OR g.away_team_id = pt.team_id
+                JOIN Team_Season ts
+                    ON ts.team_id = pt.team_id AND ts.season_id = g.season_id
+                WHERE pt.player_id = ?
+                AND g.game_id = ?
+                AND c.user_id = ?
+                AND pt.end_date IS NULL
+                LIMIT 1
+            ";
+
+            $stmt = prepare_with_perms($db, $query);
+            $stmt->bind_param("iii", $player_id, $game_id, $_SESSION['UserID']);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if ($stmt->num_rows === 0) {
+                error("You can only update stats for players you currently coach", "../../pages/stat_page.php");
+            }
+            $stmt->close();
+        }
+    } catch (mysqli_sql_exception $e) {
+        error("Stat not updated", "../../pages/stat_page.php");
+    }
+
+    // Update Stat
     $query = "
         UPDATE Stat s
-        JOIN Player p ON s.player_id = p.player_id
-        JOIN Player_Team pt ON p.player_id = pt.player_id
-        LEFT JOIN Coach c ON pt.team_id = c.team_id
         SET s.$field = ?
         WHERE s.stat_id = ?
-        AND (
-                (c.user_id IS NOT NULL AND c.user_id = ?)
-                OR c.user_id IS NULL
-            )
     ";
 
     $stmt = prepare_with_perms($db, $query);
-    $stmt->bind_param('iii', $value, $stat_id, $_SESSION['UserID']);
+    $stmt->bind_param('ii', $value, $stat_id);
     try {
         $stmt->execute();
         if ($stmt->affected_rows === 0) {

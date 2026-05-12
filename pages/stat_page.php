@@ -15,15 +15,17 @@
     function display_edit_stats() {
         echo "<h2>Edit Stats</h2>";
 
-        // Edits are handled in edit_stat.php, so this page only displays the editable stat table
+        // Get information relevant to stats: player, game, etc.
         $query = "
             SELECT
                 p.first_name,
                 p.last_name,
+                p.player_id,
                 p.position,
                 own_team.name as team_name,
                 g.week,
                 g.date,
+                g.game_id,
                 home.name AS home_team,
                 away.name AS away_team,
                 s.touchdowns,
@@ -36,6 +38,8 @@
             FROM Stat s
             JOIN Game g
                 ON s.game_id = g.game_id
+            JOIN Season se
+                ON se.season_id = g.season_id
             JOIN Player p
                 ON s.player_id = p.player_id
             JOIN Team home
@@ -46,7 +50,7 @@
                 ON pt.player_id = p.player_id
             JOIN Team own_team
                 ON own_team.team_id = pt.team_id
-            ORDER BY g.week, g.date, p.last_name ASC
+            ORDER BY se.year DESC, g.week, g.date, p.last_name ASC
         ";
 
         global $db;
@@ -80,15 +84,19 @@
 
             $fields = ['touchdowns', 'passing_yards', 'rushing_yards', 'receiving_yards', 'tackles', 'interceptions'];
             $stat_id = intval($stat['stat_id']);
+            $game_id = intval($stat['game_id']);
+            $player_id = intval($stat['player_id']);
 
             foreach ($fields as $field) {
                 $val = intval($stat[$field]);
 
                 echo "<td>
                         <form method='post' action='../scripts/stat/edit_stat.php'>
-                            <input type='hidden' name='edit_stat_id' value='$stat_id'>
-                            <input type='hidden' name='edit_stat_field' value='$field'>
-                            <input type='number' name='edit_stat_value' value='$val' min='0' style='width: 50px;'>
+                            <input type='hidden' name='stat_id' value='$stat_id'>
+                            <input type='hidden' name='stat_field' value='$field'>
+                            <input type='number' name='stat_value' value='$val' min='0' style='width: 50px;'>
+                            <input type='hidden' name='player_id' value='$player_id'>
+                            <input type='hidden' name='game_id' value='$game_id'>
                             <br>
                             <input type='submit' value='Edit'>
                         </form>
@@ -97,7 +105,9 @@
 
             echo "<td>
                     <form method='post' action='../scripts/stat/delete_stat.php'>
-                        <input type='hidden' name='delete_stat_id' value='$stat_id'>
+                        <input type='hidden' name='stat_id' value='$stat_id'>
+                        <input type='hidden' name='player_id' value='$player_id'>
+                        <input type='hidden' name='game_id' value='$game_id'>
                         <input type='submit' value='Delete'>
                     </form>
                   </td>";
@@ -110,19 +120,20 @@
 
     function display_add_stats() {
         global $db;
-
-        echo "<h2>Add Player Stat</h2>";
-        echo "<form method='post' action='../scripts/stat/add_stat.php'>";
-
+        // Get list of seasons
         $query = "
             SELECT season_id, year
             FROM Season
             ORDER BY year DESC
         ";
         $seasons = query_with_perms($db, $query);
+
+        echo "<h2>Add Player Stat</h2>";
+        echo "<form method='post' action='../scripts/stat/add_stat.php'>";
         echo "<label>Season:</label><br>";
         echo "<select name='season_id' required>";
         echo "<option value=''>-- Select Season --</option>";
+        // Display seasons
         while ($season = $seasons->fetch_assoc()) {
             $season_id = intval($season['season_id']);
             $year = sanitize_str($season['year']);
@@ -130,6 +141,7 @@
         }
         echo "</select><br><br>";
 
+        // Get list of games
         $query = "
             SELECT 
                 g.game_id, 
@@ -138,8 +150,10 @@
                 home.name AS home_team, 
                 away.name AS away_team
             FROM Game g
-            JOIN Team home ON g.home_team_id = home.team_id
-            JOIN Team away ON g.away_team_id = away.team_id
+            JOIN Team home
+                ON g.home_team_id = home.team_id
+            JOIN Team away
+                ON g.away_team_id = away.team_id
             ORDER BY g.date ASC
         ";
         $games = query_with_perms($db, $query);
@@ -147,7 +161,7 @@
         echo "<label>Game:</label><br>";
         echo "<select name='game_id' required>";
         echo "<option value=''>-- Select Game --</option>";
-
+        // Display list of games
         while ($game = $games->fetch_assoc()) {
             $game_id = intval($game['game_id']);
             $week = intval($game['week']);
@@ -160,6 +174,7 @@
 
         echo "</select><br><br>";
 
+        // Get list of teams
         $query = "
             SELECT team_id, name
             FROM Team
@@ -169,6 +184,7 @@
         echo "<label>Team:</label><br>";
         echo "<select name='team_id' required>";
         echo "<option value=''>-- Select Team --</option>";
+        // Display list of teams
         while ($team = $teams->fetch_assoc()) {
             $team_id = intval($team['team_id']);
             $team_name = sanitize_str($team['name']);
@@ -176,6 +192,7 @@
         }
         echo "</select><br><br>";
 
+        // Get list of players
         $query = "
             SELECT player_id, first_name, last_name
             FROM Player
@@ -185,6 +202,7 @@
         echo "<label>Player:</label><br>";
         echo "<select name='player_id' required>";
         echo "<option value=''>-- Select Player --</option>";
+        // Display list of players
         while ($player = $players->fetch_assoc()) {
             $player_id = intval($player['player_id']);
             $first_name = sanitize_str($player['first_name']);
@@ -193,10 +211,12 @@
         }
         echo "</select><br><br>";
 
+        // Display statistics
         $stat_fields = ['Touchdowns', 'Passing Yards', 'Rushing Yards', 'Receiving Yards', 'Tackles', 'Interceptions'];
         foreach ($stat_fields as $field) {
             echo "<label>" . $field . ":</label><br>";
-            echo "<input type='number' name='$field' value='0' min='0'><br><br>";
+            $field_name = str_replace(" ", "_", strtolower($field));
+            echo "<input type='number' name='$field_name' value='0' min='0'><br><br>";
         }
 
         echo "<input type='submit' value='Add Stat'>";

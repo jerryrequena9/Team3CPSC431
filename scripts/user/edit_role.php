@@ -7,6 +7,10 @@
     error("Required fields are missing", "../../pages/user_page.php");
   }
 
+  $username = trim($_POST['manage_user_username']);
+  $role = trim($_POST['manage_user_role']);
+
+  // Edit role of user
   $query = "
     UPDATE UserAccount u
     JOIN Role r
@@ -17,8 +21,6 @@
   
   global $db;
   $stmt = prepare_with_perms($db, $query); 
-  $username = trim($_POST['manage_user_username']);
-  $role = trim($_POST['manage_user_role']);
   $stmt->bind_param("ss", $role, $username);
   
   try {

@@ -9,11 +9,23 @@
     error("Required fields are missing", "../../pages/user_page.php");
   }
 
-  $username = trim($_POST['manage_user_create_user_username']);
-  $email = trim($_POST['manage_user_create_user_email']);
-  $password = trim($_POST['manage_user_create_user_password']);
-  $repeat_password = trim($_POST['manage_user_create_user_repeat_password']);
-  $role = trim($_POST['manage_user_create_user_role']);
+  $username = trim($_POST['add_user_username']);
+  $email = trim($_POST['add_user_email']);
+  $password = trim($_POST['add_user_password']);
+  $repeat_password = trim($_POST['add_user_repeat_password']);
+  $role = trim($_POST['add_user_role']);
+
+  if (strlen($username) < 4 || strlen($username) > 50) {
+    error("Username must be between 4 and 50 characters", "../../pages/user_page.php");
+  }
+
+  if (strlen($password) < 4) {
+    error('Password must be at least 4 characters', '../../pages/user_page.php');
+  }
+
+  if ($password !== $repeat_password) {
+    error('Passwords do not match', '../../pages/user_page.php');
+  }
 
   try {
     register($username, $email, $password, $repeat_password, $role);
@@ -24,7 +36,7 @@
   }
 
   function register($username, $email, $password, $confirm_password, $role) {
-    if ($password != $confirm_password) {
+    if ($password !== $confirm_password) {
       throw new Exception('The passwords you entered do not match. Please go back and try again.');
     }
 
@@ -32,6 +44,7 @@
 
     global $db;
 
+    // Register user
     $query = "
       INSERT INTO UserAccount (username, password_hash, email, role_id)
       SELECT ?, ?, ?, role_id
@@ -42,6 +55,7 @@
     $stmt = prepare_with_perms($db, $query);
     $stmt->bind_param("ssss", $username, $hashed_password, $email, $role);
     
+    // Validate constraints
     try {
       $stmt->execute();
       if ($stmt->affected_rows === 0) {

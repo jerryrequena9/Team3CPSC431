@@ -10,13 +10,13 @@
   echo '
     <form method="post" action="../scripts/user/change_password.php">
         <label>Old Password:</label><br>
-        <input type="password" name="change_old_password" required><br><br>
+        <input type="password" name="old_password" required><br><br>
 
         <label>New Password:</label><br>
-        <input type="password" name="change_new_password" required><br><br>
+        <input type="password" name="new_password" required><br><br>
 
         <label>Repeat New Password:</label><br>
-        <input type="password" name="change_repeat_new_password" required><br><br>
+        <input type="password" name="repeat_new_password" required><br><br>
 
         <input type="submit" value="Change Password"><br><br>
     </form>

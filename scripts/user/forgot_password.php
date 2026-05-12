@@ -5,15 +5,9 @@
    * Security Features:
    * - Generates a cryptographically secure temporary password using random_bytes
    * - Requires email verification for password reset
-   * - Password reset must be done via email (not shown in response to prevent user enumeration)
-   * - Uses prepared statements to prevent SQL injection
+   * - Password reset must be done via email
    * - Only updates password if user exists (preventing user enumeration)
-   * 
-   * Production Note:
-   * A stronger production system should use one-time password reset tokens with expiration,
-   * or send a reset link instead of a temporary password.
    */
-
   require_once(__DIR__ . '/../StartSession.php');
   require_once(__DIR__ . '/../../pages/html_components.php');
   require_once(__DIR__ . '/../helpers.php');
@@ -22,7 +16,7 @@
     error("Required fields are missing", "../../pages/forgot_password_page.php");
   }
 
-  $username = trim($_POST['forgot_username']);
+  $username = trim($_POST['username']);
 
   // Validate username format
   if (empty($username) || strlen($username) < 4 || strlen($username) > 50) {
@@ -30,11 +24,6 @@
   }
 
   try {
-    /*
-     * Reset the password to a temporary random password.
-     * A stronger production system would use one-time password reset tokens
-     * instead of emailing a temporary password.
-     */
     $password = reset_password($username);
 
     email_password($username, $password);
@@ -66,18 +55,13 @@
     global $db;
 
     /*
-     * Generate a cryptographically secure temporary password (16 hex characters = 64 bits of entropy).
-     * random_bytes is preferred for security-sensitive random values.
+     * Generate a cryptographically secure temporary password (16 hex characters).
      * This creates a password like: a3f5c2b1d4e6f7a8
      */
     $new_password = bin2hex(random_bytes(8));
     $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-    /*
-     * The database account must have UPDATE permission on UserAccount.
-     * This function does not rely on role UI checks because forgot password
-     * happens before login (user is not authenticated).
-     */
+    // Update password
     $query = "
       UPDATE UserAccount
       SET password_hash = ?
@@ -116,10 +100,7 @@
   function email_password($username, $password) {
     global $db;
 
-    /*
-     * Look up the email address from the database instead of trusting form data.
-     * This ensures we send to the correct, verified email on file.
-     */
+    // Find user email
     $query = "
       SELECT email
       FROM UserAccount
@@ -141,16 +122,39 @@
     }
     $stmt->close();
 
-    $from = "From: support@football\r\n";
-    $message =
-      "Your temporary football password is: " . $password . "\r\n" .
+    require_once("Mail.php");
+    require_once(__DIR__ . "/../../config.php");
+    $subject = "Football password reset";
+    $body = "Your temporary football password is: " . $password . "\r\n" .
       "Please log in and change your password immediately.\r\n" .
       "This temporary password will not expire, so keep it secure.\r\n";
 
-    if (!mail($email, 'Football password reset', $message, $from)) {
-      throw new Exception('Email was not sent');
+    $from = EMAIL_USER;
+    $to = $email;
+
+    $username = $from;
+    $password = EMAIL_APP_PASSWORD;
+
+    $host = EMAIL_HOST;
+    $port = "465";
+
+    $headers = array(
+        'From'    => $from,
+        'To'      => $to,
+        'Subject' => $subject,
+    );
+
+    $smtp = Mail::factory('smtp', array(
+        'host'     => $host,
+        'port'     => $port,
+        'auth'     => true,
+        'username' => $username,
+        'password' => $password,
+    ));
+
+    $mail = $smtp->send($to, $headers, $body);
+    if (PEAR::isError($mail)) {
+      throw new Exception("mail not sent");
     }
   }
-?>
-
 ?>

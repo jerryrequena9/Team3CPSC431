@@ -12,6 +12,27 @@
 
     global $db;
 
+    // Check that the user is not a player
+    $query = "
+        SELECT COUNT(*)
+        FROM Player
+        WHERE user_id = ?
+    ";
+    $stmt = prepare_with_perms($db, $query);
+    $stmt->bind_param("i", $user_id);
+    try {
+        $stmt->execute();
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $stmt->close();
+    } catch (mysqli_sql_exception $e) {
+        error("User not promoted", "../../pages/user_page.php");
+    }
+    if ($count !== 0) {
+        error("User is a player", "../../pages/user_page.php");
+    }
+
+    // Promote user to coach
     $query = "
         INSERT INTO Coach
             (user_id, first_name, last_name)

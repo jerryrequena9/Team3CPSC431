@@ -8,22 +8,25 @@
     error("Required fields are missing", "../../pages/user_page.php");
   }
 
-  $username = trim($_POST['manage_user_change_password_username']);
-  $password = trim($_POST['manage_user_change_new_password']);
-// because the browser leaves the page immediately and loads manage_user_page.php
-// The navigation/footer will now come from manage_user_page.php
- try {
-    change_password($username, $password);
-    success("Password changed", "../../pages/user_page.php");
+  $username = trim($_POST['change_password_username']);
+  $password = trim($_POST['change_password_password']);
 
-} catch (Exception $e) {
-    error($e->getMessage(), "../../pages/user_page.php");
-}
+  if (strlen($password) < 4) {
+    error("Password must be at least 4 characters", "../../pages/user_page.php");
+  }
+
+  try {
+      change_password($username, $password);
+      success("Password changed", "../../pages/user_page.php");
+  } catch (Exception $e) {
+      error($e->getMessage(), "../../pages/user_page.php");
+  }
 
 function change_password($username, $new_password) {
     global $db;
 
     $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
+    // Update user password
     $query = "
       UPDATE UserAccount
       SET password_hash = ?

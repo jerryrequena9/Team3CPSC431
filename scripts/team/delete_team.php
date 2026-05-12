@@ -13,10 +13,7 @@
 
     $team_id = intval($_POST['team_id']);
 
-    /*
-        * Actual delete permission should still be enforced by the Manager
-        * database account having DELETE permission on Team.
-        */
+    // Delete team
     $query = "
         DELETE FROM Team
         WHERE team_id = ?

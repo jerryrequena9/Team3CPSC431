@@ -15,6 +15,7 @@
     $name = trim($_POST['name']);
     $city = trim($_POST['city']);
 
+    // Update a stadium
     $query = "
         UPDATE Stadium
         SET name = ?, city = ?

@@ -14,6 +14,7 @@
   function display_edit_player() {
     global $db;
 
+    // Get players
     $query = "
         SELECT
           p.player_id,
@@ -47,6 +48,7 @@
         echo "<form method='post' action='../scripts/player/edit_player.php'>";
         echo "<input type='hidden' name='player_id' value='$player_id'>";
 
+        // Display first name, last name, and position in editable fields
         echo "<td><input type='text' name='first_name' value='$first_name' required></td>";
         echo "<td><input type='text' name='last_name' value='$last_name' required></td>";
         echo "<td><input type='text' name='position' minlength='2' maxlength='2' value=$position required></td>";

@@ -13,6 +13,7 @@
 
     $stadium_id = intval($_POST['stadium_id']);
 
+    // Delete a stadium
     $query = "
         DELETE FROM Stadium
         WHERE stadium_id = ?

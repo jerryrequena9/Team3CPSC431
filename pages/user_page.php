@@ -6,20 +6,26 @@
   do_html_header('Manage Users'); 
   check_valid_user();
   display_user_nav();
+
   display_manage_user();
   display_add_user();
   display_promote_player();
   display_promote_coach();
+
   do_html_footer();
 
   function display_manage_user() {
     echo "<h2>Edit Users</h2>";
 
-    // left join player and coach because not all users are players
+    // Get information about every user
+    // If they are a coach or player, get their
+    // first and last name as well.
+    // We left join player and coach because not all users are players
     // or coaches
     $query = "
       SELECT 
           u.username,
+          u.user_id,
           r.name AS role,
           u.email,
           u.last_login,
@@ -35,12 +41,13 @@
       LEFT JOIN Coach c
           ON u.user_id = c.user_id
       ORDER BY u.role_id DESC, u.username ASC
-  ";
+    ";
     global $db;
     $result = query_with_perms($db, $query);
     echo "<table>";
     echo "<tr>
             <th>Role</th>
+            <th>Player/Coach?</th>
             <th>Username</th>
             <th>Email</th>
             <th>Last Login</th>
@@ -66,29 +73,61 @@
                   <input type='hidden' name='username' value='" . sanitize_str($row['username']) . "'>
               </form>
             </td>";
+
+      // Find if user is a player or coach
+      // Returns 'Player', 'Coach', or nothing
+      $query = "
+        SELECT 'Player' AS job
+        FROM Player
+        WHERE user_id = ?
+          UNION
+        SELECT 'Coach' AS job
+        FROM Coach
+        WHERE user_id = ?
+        LIMIT 1
+      ";
+
+      try {
+        $stmt = prepare_with_perms($db, $query);
+        $stmt->bind_param("ii", $row['user_id'], $row['user_id']);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+          $stmt->bind_result($player_or_coach);
+          $stmt->fetch();
+        } else {
+          $player_or_coach = "N/A";
+        }
+      } catch (mysqli_sql_exception $e) {
+        $player_or_coach = "N/A";
+      } finally {
+        $stmt->close();
+      }
+
+      // Display player or coach, username, email, last login
+      echo "<td>" . sanitize_str($player_or_coach) . "</td>";
       echo "<td>" . sanitize_str($row['username']) . "</td>";
       echo "<td>" . sanitize_str($row['email']) . "</td>";
       echo "<td>" . sanitize_str($row['last_login']) . "</td>";
-      $first_name = '';
-      if (!empty($row['player_first_name'])) {
-          $first_name = $row['player_first_name'];
-      } else if (!empty($row['coach_first_name'])) {
-          $first_name = $row['coach_first_name'];
-      }
 
-      $last_name = '';
-      if (!empty($row['player_last_name'])) {
+      // Display first and last name
+      $first_name = "";
+      $last_name = "";
+      if ($player_or_coach == 'Player') {
+          $first_name = $row['player_first_name'];
           $last_name = $row['player_last_name'];
-      } else if (!empty($row['coach_last_name'])) {
+      } else if ($player_or_coach == 'Coach') {
+          $first_name = $row['coach_first_name'];
           $last_name = $row['coach_last_name'];
       }
+
       echo "<td>" . sanitize_str($first_name) . "</td>";
       echo "<td>" . sanitize_str($last_name) . "</td>";
 
       echo "<td>";
       echo '<form method="post" action="../scripts/user/force_change_password.php">
-              <input type="hidden" name="manage_user_change_password_username" value="' . sanitize_str($row['username']) . '">
-              <input type="text" placeholder="New password" name="manage_user_change_new_password">
+              <input type="hidden" name="change_password_username" value="' . sanitize_str($row['username']) . '">
+              <input type="text" placeholder="New password" name="change_password_password" required minlength="4">
               <input type="submit" value="Change Password">
             </form>
       ';
@@ -96,7 +135,7 @@
 
       echo "<td>";
       echo '<form method="post" action="../scripts/user/delete_user.php">
-              <input type="hidden" name="manage_user_delete_username" value="' . sanitize_str($row['username']) . '">
+              <input type="hidden" name="delete_username" value="' . sanitize_str($row['username']) . '">
               <input type="submit" value="Delete">
             </form>
       ';
@@ -113,18 +152,18 @@
       <h2>Add User</h2>
       <form method="post" action="../scripts/user/create_user.php">
         <label>Email:</label><br>
-        <input type="email" name="manage_user_create_user_email" required><br><br>
+        <input type="email" name="add_user_email" required><br><br>
 
         <label>Username:</label><br>
-        <input type="text" name="manage_user_create_user_username" minlength="4" maxlength="50" required><br><br>
+        <input type="text" name="add_user_username" minlength="4" maxlength="50" required><br><br>
 
         <label>Password:</label><br>
-        <input type="password" name="manage_user_create_user_password" minlength="4" required><br><br>
+        <input type="password" name="add_user_password" minlength="4" required><br><br>
 
         <label>Confirm Password:</label><br>
-        <input type="password" name="manage_user_create_user_repeat_password" minlength="4" required><br><br>
+        <input type="password" name="add_user_repeat_password" minlength="4" required><br><br>
         <label>Role:</label><br>
-        <select name="manage_user_create_user_role" required>
+        <select name="add_user_role" required>
           <option value="">-- Select Role --</option>
     ';
           $roles = get_roles();

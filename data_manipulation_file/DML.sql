@@ -31,27 +31,27 @@ INSERT INTO Team (name, stadium_id, conference, division, city) VALUES
 
 
 -- Seasons
-INSERT INTO Season (champion, year) VALUES
-(4, 2024),
-(1, 2025);
+INSERT INTO Season (year) VALUES
+(2024),
+(2025);
 
-INSERT INTO Team_Season (team_id, season_id) VALUES
-(1, 1),
-(2, 1),
-(3, 1),
-(4, 1),
-(5, 1),
-(6, 1),
-(7, 1),
-(8, 1),
-(1, 2),
-(2, 2),
-(3, 2),
-(4, 2),
-(5, 2),
-(6, 2),
-(7, 2),
-(8, 2);
+INSERT INTO Team_Season (team_id, season_id, wins, losses) VALUES
+(1, 1, 0, 1),
+(2, 1, 1, 1),
+(3, 1, 0, 2),
+(4, 1, 2, 0),
+(5, 1, 2, 0),
+(6, 1, 1, 1),
+(7, 1, 1, 0),
+(8, 1, 0, 2),
+(1, 2, 1, 1),
+(2, 2, 2, 1),
+(3, 2, 1, 1),
+(4, 2, 0, 2),
+(5, 2, 2, 0),
+(6, 2, 1, 1),
+(7, 2, 0, 1),
+(8, 2, 1, 1);
 
 -- Games
 INSERT INTO Game (home_team_id, away_team_id, stadium_id, season_id, week, date, home_score, away_score) VALUES
@@ -91,10 +91,11 @@ INSERT INTO UserAccount (username, password_hash, email, role_id) VALUES
 ('Justin_Fields',    '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'justin1@football.com',  2),
 ('Cooper_Kupp',      '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'cooper1@football.com',  2),
 ('Micah_Parsons',    '$2y$10$/sywK/C63wQrQRZKyb2X8e6/kMkL1d6i/8n7nM7Fu1eL7/HRFD6yO', 'micah1@football.com',   2),
-('Coach_Last',       '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm', 'coach1@football.com',   3);
+('coach2',           '$2y$10$nYkrRSdckNDGsb2w/A6XoO0YBCEn.ywEBXYM9aVIUCchj7YdpDOtm', 'coach2@football.com',   3);
 
 -- Players
 INSERT INTO Player (user_id, first_name, last_name, position, status) VALUES
+(3,  'Player',  'One',       'QB', 'Active'),
 (5,  'Matthew', 'Stafford',  'QB', 'Active'),
 (6,  'Aaron',   'Donald',    'DE', 'Active'),
 (7,  'Tom',     'Brady',     'QB', 'Inactive'),
@@ -187,4 +188,5 @@ INSERT INTO Stat (player_id, game_id, touchdowns, passing_yards, rushing_yards, 
 
 -- Coaches
 INSERT INTO Coach (user_id, team_id, first_name, last_name) VALUES
-(2, 1, "Joe", "Coach");
+(2,  1, "Joe",  "Coach"),
+(17, 2, "Joe2", "Coach2");

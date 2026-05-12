@@ -15,6 +15,7 @@
   function display_edit_coach() {
     global $db;
 
+    // Get list of teams
     $query = "
       SELECT team_id, name
       FROM Team
@@ -22,6 +23,7 @@
     ";
     $teams_result = query_with_perms($db, $query);
 
+    // Get coach information
     $query = "
         SELECT coach_id, user_id, team_id, first_name, last_name
         FROM Coach
@@ -29,6 +31,7 @@
     ";
     $coach_result = query_with_perms($db, $query);
 
+    // Display coach table
     echo "<h2>Edit Coaches</h2>";
     echo "<table>";
     echo "<tr>
@@ -38,6 +41,7 @@
             <th>Edit</th>
           </tr>";
 
+    // Display editable fields
     while ($coach = $coach_result->fetch_assoc()) {
         $coach_id = intval($coach['coach_id']);
         $team_id = intval($coach['team_id']);
@@ -51,13 +55,13 @@
         echo "<td><input type='text' name='first_name' value='$first_name' required></td>";
         echo "<td><input type='text' name='last_name' value='$last_name' required></td>";
 
-        echo "<td><select name='team_id'>";
+        echo "<td><select name='team_id' required>";
         echo "<option value=''>-- No Team--</option>";
         foreach ($teams_result as $team) {
-          $this_team_id = intval($team['team_id']);
+          $chosen_team_id = intval($team['team_id']);
           $team_name = sanitize_str($team['name']);
-          $selected = ($this_team_id === $team_id) ? "selected" : "";
-          echo "<option value='$this_team_id' $selected>$team_name</option>";
+          $selected = ($chosen_team_id === $team_id) ? "selected" : "";
+          echo "<option value='$chosen_team_id' $selected>$team_name</option>";
         }
         echo "</select></td>";
 

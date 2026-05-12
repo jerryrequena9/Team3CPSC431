@@ -9,6 +9,9 @@
     error("Required fields are missing", "../../pages/user_page.php");
   }
 
+  $username = trim($_POST['delete_username']);
+
+  // Delete user
   $query = "
     DELETE FROM UserAccount
     WHERE username = ?;
@@ -16,7 +19,6 @@
   
   global $db;
   $stmt = prepare_with_perms($db, $query);
-  $username = trim($_POST['manage_user_delete_username']);
   $stmt->bind_param("s", $username);
   try {
     $stmt->execute();

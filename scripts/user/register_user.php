@@ -8,10 +8,18 @@
     error("Required fields are missing", "../../pages/register_user_page.php");
   }
 
-  $email = trim($_POST['register_email']);
-  $username = trim($_POST['register_username']);
-  $password = trim($_POST['register_password']);
-  $confirm_password = trim($_POST['register_confirm_password']);
+  $email = trim($_POST['email']);
+  $username = trim($_POST['username']);
+  $password = trim($_POST['password']);
+  $confirm_password = trim($_POST['confirm_password']);
+
+  if (strlen($username) < 4 || strlen($username) > 50) {
+    error("Username must be between 4 and 50 characters", "../../pages/register_user_page.php");
+  }
+
+  if (strlen($password) < 4 || strlen($confirm_password)) {
+    error('Password must be at least 4 characters', '../../pages/register_user_page.php');
+  }
 
   try {
 	  register($username, $email, $password, $confirm_password);

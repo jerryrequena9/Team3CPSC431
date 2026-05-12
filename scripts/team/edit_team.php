@@ -30,10 +30,8 @@
     if (!in_array($division, $valid_divisions, true)) {
         error("Invalid division", "../../pages/team_page.php");
     }
-    /*
-     * Actual write enforcement should still come from the Manager database
-     * account having UPDATE permission on Team.
-     */
+
+    // Edit team
     $query = "
         UPDATE Team
         SET name = ?, city = ?, conference = ?, division = ?, stadium_id = ?

@@ -18,8 +18,7 @@
     }
 
     $query = "
-        INSERT INTO Season
-            (year)
+        INSERT INTO Season (year)
         VALUES (?)
     ";
     $stmt = prepare_with_perms($db, $query);

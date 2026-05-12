@@ -1,10 +1,14 @@
 <?php
 require_once(__DIR__ . "/Adaptation.php");
 require_once(__DIR__ . "/../pages/html_components.php");
+require_once(__DIR__ . "/../config.php");
 /**
  * Sanitize input string
  */
 function sanitize_str($data) {
+  if (empty($data) || is_null($data)) {
+    return $data;
+  }
   return htmlspecialchars(trim($data));
 }
 
@@ -48,9 +52,8 @@ function check_valid_user() {
 }
 
 // Generic error page for permission errors
-// For logined users
 function err_permission_denied() {
-  header('Location: ../../pages/permission_denied_page.php');
+  header('Location: ' . BASE_URL . '/pages/permission_denied_page.php');
   exit;
 }
 

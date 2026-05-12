@@ -10,7 +10,7 @@
    * - Uses password_hash/password_verify for secure password handling
    * 
    * Validation:
-   * - New password must be at least 8 characters
+   * - New password must be at least 4 characters
    * - New passwords must match in confirmation field
    */
 
@@ -30,9 +30,9 @@
    */
   $username = $_SESSION['UserName'];
 
-  $old_password = trim($_POST['change_old_password']);
-  $new_password = trim($_POST['change_new_password']);
-  $repeat_new_password = trim($_POST['change_repeat_new_password']);
+  $old_password = trim($_POST['old_password']);
+  $new_password = trim($_POST['new_password']);
+  $repeat_new_password = trim($_POST['repeat_new_password']);
 
   // Validate old password was provided
   if (empty($old_password)) {
@@ -44,8 +44,8 @@
     error('New password is required', '../../pages/change_password_page.php');
   }
 
-  if (strlen($new_password) < 8) {
-    error('New password must be at least 8 characters', '../../pages/change_password_page.php');
+  if (strlen($new_password) < 4) {
+    error('New password must be at least 4 characters', '../../pages/change_password_page.php');
   }
 
   if ($new_password !== $repeat_new_password) {
@@ -84,7 +84,6 @@
 
     /*
      * Verify the current user's existing password before allowing a change.
-     * This prevents CSRF attacks where a malicious page could change the user's password.
      */
     $query = "
       SELECT password_hash
@@ -117,7 +116,6 @@
 
     /*
      * Password updates are restricted to the logged-in username only.
-     * MySQL permissions should still enforce UPDATE access on UserAccount.
      */
     $query = "
       UPDATE UserAccount

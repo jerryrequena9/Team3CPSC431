@@ -27,6 +27,7 @@
   function display_edit_stadium() {
     global $db;
 
+    // Get list of stadiums
     $query = "
         SELECT stadium_id, name, city
         FROM Stadium

@@ -14,8 +14,8 @@ if (!is_valid_post($_POST)) {
     error("Required fields are missing", "../../pages/login_page.php");
 }
 
-$username = trim($_POST['login_username']);
-$password = trim($_POST['login_password']);
+$username = trim($_POST['username']);
+$password = trim($_POST['password']);
 
 try {
     // Attempt to log the user in
@@ -100,38 +100,5 @@ function login($username, $password) {
     $_SESSION['UserName'] = $db_username;
     $_SESSION['UserRole'] = $role;
     $_SESSION['UserID'] = $user_id;
-
-    // Fetch additional role-specific data (coach team_id or player_id)
-    $query = "
-        SELECT COALESCE(c.team_id, p.player_id) as role_specific_id,
-               CASE 
-                   WHEN c.coach_id IS NOT NULL THEN 'team_id'
-                   WHEN p.player_id IS NOT NULL THEN 'player_id'
-               END as id_type
-        FROM UserAccount u
-        LEFT JOIN Coach c ON u.user_id = c.user_id
-        LEFT JOIN Player p ON u.user_id = p.user_id
-        WHERE u.user_id = ?
-    ";
-
-    $stmt = prepare_with_perms($db, $query);
-    $stmt->bind_param("i", $user_id);
-    
-    try {
-        $stmt->execute();
-        $stmt->bind_result($role_id, $id_type);
-        if ($stmt->fetch()) {
-            // Store role-specific IDs for permission checks
-            if ($id_type === 'team_id' && $role_id !== null) {
-                $_SESSION['team_id'] = $role_id;
-            } elseif ($id_type === 'player_id' && $role_id !== null) {
-                $_SESSION['player_id'] = $role_id;
-            }
-        }
-    } catch (mysqli_sql_exception $e) {
-        // Role-specific data is optional; continue without it
-    } finally {
-        $stmt->close();
-    }
 }
 ?>

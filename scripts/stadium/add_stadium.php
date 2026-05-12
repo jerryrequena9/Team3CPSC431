@@ -14,6 +14,7 @@
     $name = trim($_POST['name']);
     $city = trim($_POST['city']);
 
+    // Create a stadium
     $query = "
         INSERT INTO Stadium
             (name, city)

@@ -6,10 +6,10 @@ do_html_header("Login");
 echo '
   <form method="post" action="../scripts/user/login.php">
       <label>Username:</label><br>
-      <input type="text" name="login_username" minlength="4" maxlength="50" required><br><br>
+      <input type="text" name="username" minlength="4" maxlength="50" required><br><br>
 
       <label>Password:</label><br>
-      <input type="password" name="login_password" minlength="4" required><br><br>
+      <input type="password" name="password" minlength="4" required><br><br>
 
       <input type="submit" value="Login"><br><br>
 
