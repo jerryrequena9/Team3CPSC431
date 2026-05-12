@@ -22,8 +22,8 @@
     $position = trim($_POST['position']);
     $status = trim($_POST['status']);
 
-    if ($status !== 'Active' || $status !== 'Inactive') {
-        error("Status must be 'Active' or 'Inactive'", "../../pages/player_page.php");
+    if ($status !== 'Active' && $status !== 'Inactive') {
+        error("Status must be Active or Inactive", "../../pages/player_page.php");
     }
 
     global $db;
