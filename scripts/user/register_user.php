@@ -17,8 +17,8 @@
     error("Username must be between 4 and 50 characters", "../../pages/register_user_page.php");
   }
 
-  if (strlen($password) < 4 || strlen($confirm_password) < 4) {
-    error('Password must be at least 4 characters', '../../pages/register_user_page.php');
+  if (strlen($password) < 8 || strlen($confirm_password) < 8) {
+    error('Password must be at least 8 characters', '../../pages/register_user_page.php');
   }
 
   try {
@@ -48,7 +48,7 @@
       INSERT INTO UserAccount (username, password_hash, email)
       VALUES (?, ?, ?)
     ";
-	
+
     $stmt = prepare_with_perms($db, $query);
     $stmt->bind_param("sss", $username, $hashed_password, $email);
     try {

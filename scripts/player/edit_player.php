@@ -1,7 +1,7 @@
 <?php
     /**
      * Edit Player Information
-     * 
+     *
      * Permissions:
      * - Players can only edit their own personal information (name, position, status)
      * - Managers can edit any player's information
@@ -33,17 +33,17 @@
      * - Players can only edit themselves
      * - Managers can edit any player
      */
-    
+
     // Query to get the player_id for this user
     $query = "
         SELECT player_id
         FROM Player
         WHERE user_id = ?
     ";
-    
+
     $stmt = prepare_with_perms($db, $query);
     $stmt->bind_param("i", $_SESSION['UserID']);
-    
+
     try {
         $stmt->execute();
         $stmt->bind_result($user_player_id);
@@ -76,6 +76,6 @@
     } finally {
         $stmt->close();
     }
-    
+
     success("Player updated", "../../pages/player_page.php");
 ?>

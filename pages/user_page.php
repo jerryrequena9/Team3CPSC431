@@ -3,7 +3,7 @@
   require_once(__DIR__ . '/../scripts/helpers.php');
   require_once(__DIR__ . '/html_components.php');
 
-  do_html_header('Manage Users'); 
+  do_html_header('Manage Users');
   check_valid_user();
   display_user_nav();
 
@@ -23,7 +23,7 @@
     // We left join player and coach because not all users are players
     // or coaches
     $query = "
-      SELECT 
+      SELECT
           u.username,
           u.user_id,
           r.name AS role,
@@ -127,7 +127,7 @@
       echo "<td>";
       echo '<form method="post" action="../scripts/user/force_change_password.php">
               <input type="hidden" name="change_password_username" value="' . sanitize_str($row['username']) . '">
-              <input type="text" placeholder="New password" name="change_password_password" required minlength="4">
+              <input type="text" placeholder="New password" name="change_password_password" required minlength="8">
               <input type="submit" value="Change Password">
             </form>
       ';
@@ -145,7 +145,7 @@
 
     echo "</table>";
   }
-  
+
   function display_add_user() {
     echo '
       <br>
@@ -158,10 +158,10 @@
         <input type="text" name="add_user_username" minlength="4" maxlength="50" required><br><br>
 
         <label>Password:</label><br>
-        <input type="password" name="add_user_password" minlength="4" required><br><br>
+        <input type="password" name="add_user_password" minlength="8" required><br><br>
 
         <label>Confirm Password:</label><br>
-        <input type="password" name="add_user_repeat_password" minlength="4" required><br><br>
+        <input type="password" name="add_user_repeat_password" minlength="8" required><br><br>
         <label>Role:</label><br>
         <select name="add_user_role" required>
           <option value="">-- Select Role --</option>

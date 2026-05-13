@@ -1,14 +1,14 @@
 <?php
   /**
    * Change Password - For Authenticated Users
-   * 
+   *
    * Security Features:
    * - Requires verification of current password before allowing change
    * - Only allows users to change their own password (not others')
    * - Validates that new passwords match before hashing
    * - Uses prepared statements to prevent SQL injection
    * - Uses password_hash/password_verify for secure password handling
-   * 
+   *
    * Validation:
    * - New password must be at least 4 characters
    * - New passwords must match in confirmation field
@@ -44,8 +44,8 @@
     error('New password is required', '../../pages/change_password_page.php');
   }
 
-  if (strlen($new_password) < 4) {
-    error('New password must be at least 4 characters', '../../pages/change_password_page.php');
+  if (strlen($new_password) < 8) {
+    error('New password must be at least 8 characters', '../../pages/change_password_page.php');
   }
 
   if ($new_password !== $repeat_new_password) {
@@ -68,12 +68,12 @@
    * Function: change_password
    * --------------------------
    * Verifies the current password and updates to the new password.
-   * 
+   *
    * Parameters:
    *   $username - Username of the logged-in user
    *   $old_password - Current password (plaintext, for verification)
    *   $new_password - New password (plaintext, will be hashed)
-   * 
+   *
    * Throws Exception if:
    *   - User not found
    *   - Current password is incorrect
@@ -134,4 +134,3 @@
     }
   }
 ?>
-

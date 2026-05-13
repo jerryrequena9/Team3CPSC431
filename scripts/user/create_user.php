@@ -19,8 +19,8 @@
     error("Username must be between 4 and 50 characters", "../../pages/user_page.php");
   }
 
-  if (strlen($password) < 4) {
-    error('Password must be at least 4 characters', '../../pages/user_page.php');
+  if (strlen($password) < 8) {
+    error('Password must be at least 8 characters', '../../pages/user_page.php');
   }
 
   if ($password !== $repeat_password) {
@@ -54,7 +54,7 @@
 
     $stmt = prepare_with_perms($db, $query);
     $stmt->bind_param("ssss", $username, $hashed_password, $email, $role);
-    
+
     // Validate constraints
     try {
       $stmt->execute();

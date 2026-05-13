@@ -1,18 +1,3 @@
-# Team3CPSC431
-Football Database Project
-
-## How to Run
-1. Set configuration variables in `config.php`
-2. Execute the ddl script in `ddl_updates/ddl.sql`
-3. Execute the dml script in `data_manipulation_file/DML.sql`
-4. Start LAMPP
-
-## Email Server
-- Set the email user, email host, and email app password environment variables in `.httpd.conf` (or hardcode them if testing).
-- The email server uses PEAR NET_SMTP, which needs to be installed:
-- `sudo /opt/lampp/bin/pear install Mail`
-- `sudo /opt/lampp/bin/pear install Net_SMTP`
-
 ## Changes Made Post Project Presentations
 - Implemented seasons
 - Implemented adding, editing, and deleting games

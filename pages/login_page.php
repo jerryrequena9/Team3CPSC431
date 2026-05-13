@@ -9,7 +9,7 @@ echo '
       <input type="text" name="username" minlength="4" maxlength="50" required><br><br>
 
       <label>Password:</label><br>
-      <input type="password" name="password" minlength="4" required><br><br>
+      <input type="password" name="password" minlength="8" required><br><br>
 
       <input type="submit" value="Login"><br><br>
 

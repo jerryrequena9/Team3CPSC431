@@ -11,8 +11,8 @@
   $username = trim($_POST['change_password_username']);
   $password = trim($_POST['change_password_password']);
 
-  if (strlen($password) < 4) {
-    error("Password must be at least 4 characters", "../../pages/user_page.php");
+  if (strlen($password) < 8) {
+    error("Password must be at least 8 characters", "../../pages/user_page.php");
   }
 
   try {
