@@ -17,7 +17,7 @@
     error("Username must be between 4 and 50 characters", "../../pages/register_user_page.php");
   }
 
-  if (strlen($password) < 4 || strlen($confirm_password)) {
+  if (strlen($password) < 4 || strlen($confirm_password) < 4) {
     error('Password must be at least 4 characters', '../../pages/register_user_page.php');
   }
 

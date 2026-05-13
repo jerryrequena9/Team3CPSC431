@@ -25,7 +25,7 @@ CREATE TABLE UserAccount (
         REFERENCES Role(role_id)
         ON DELETE RESTRICT,
 
-    CONSTRAINT valid_email    CHECK (email REGEXP '^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'),
+    CONSTRAINT valid_email CHECK (email REGEXP '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'),
     CONSTRAINT valid_username CHECK (CHAR_LENGTH(username) BETWEEN 4 AND 50)
 );
 

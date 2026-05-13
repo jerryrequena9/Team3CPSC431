@@ -6,7 +6,7 @@
   echo '
     <form method="post" action="../scripts/user/register_user.php">
         <label>Email:</label><br>
-        <input type="email" name="egister_email" required><br><br>
+        <input type="email" name="email" required><br><br>
 
         <label>Username:</label><br>
         <input type="text" name="username" minlength="4" maxlength="50" required><br><br>
